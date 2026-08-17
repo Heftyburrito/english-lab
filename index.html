@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Grammar & Vocabulary Lab | Grades 7–9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Syne', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        lab: {
+                            bg: '#f8fafc',
+                            surface: '#ffffff',
+                            panel: '#ffffff',
+                            border: '#e2e8f0',
+                            darkText: '#0f172a',
+                            mutedText: '#475569',
+                            brand: '#4f46e5',
+                            brandHover: '#4338ca'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .font-heading {
+            font-family: 'Syne', sans-serif;
+            letter-spacing: -0.02em;
+        }
+        
+        /* Smooth Custom Animations */
+        .lab-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .lab-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 30px -6px rgba(79, 70, 229, 0.12);
+            border-color: #818cf8;
+        }
+
+        /* Interactive Clickable Text Error Spotting */
+        .error-word {
+            display: inline-block;
+            padding: 2px 6px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+        }
+        .error-word:hover {
+            background-color: #e0e7ff;
+            border-color: #6366f1;
+            transform: scale(1.05);
+        }
+        .error-word.selected {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+        }
+        .error-word.fixed {
+            background-color: #10b981;
+            color: white;
+            border-color: #059669;
+        }
+
+        /* Flashcard 3D Flip Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        .accent-border-cyan { border-top: 4px solid #06b6d4; }
+        .accent-border-indigo { border-top: 4px solid #6366f1; }
+        .accent-border-emerald { border-top: 4px solid #10b981; }
+        .accent-border-amber { border-top: 4px solid #f59e0b; }
+        .accent-border-rose { border-top: 4px solid #f43f5e; }
+        .accent-border-violet { border-top: 4px solid #8b5cf6; }
+        .accent-border-teal { border-top: 4px solid #14b8a6; }
+        .accent-border-sky { border-top: 4px solid #0284c7; }
+        .accent-border-purple { border-top: 4px solid #a855f7; }
+    </style>
+</head>
+<body class="h-full flex flex-col min-h-screen bg-slate-50 text-slate-900 selection:bg-indigo-500 selection:text-white">
+
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Title -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('lessons')">
+                    <div class="w-10 h-10 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold font-heading text-sm uppercase tracking-widest shadow-md hover:scale-105 transition">
+                        GL
+                    </div>
+                    <div>
+                        <h1 class="font-heading font-extrabold text-lg uppercase tracking-tight text-slate-900 flex items-center gap-2">
+                            Grammar Lab <span class="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 border border-indigo-200">GRADES 7–9</span>
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex items-center gap-1 font-mono text-xs">
+                    <button onclick="switchTab('lessons')" id="nav-lessons" class="nav-btn px-4 py-2 rounded-lg font-bold tracking-wider uppercase transition text-indigo-700 bg-indigo-50 border border-indigo-200">
+                        Grammar Units
+                    </button>
+                    <button onclick="switchTab('practice')" id="nav-practice" class="nav-btn px-4 py-2 rounded-lg font-semibold tracking-wider uppercase transition text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent">
+                        Practice Questions
+                    </button>
+                    <button onclick="switchTab('sentenceFix')" id="nav-sentenceFix" class="nav-btn px-4 py-2 rounded-lg font-semibold tracking-wider uppercase transition text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent">
+                        Fix Sentences
+                    </button>
+                    <button onclick="switchTab('textEditor')" id="nav-textEditor" class="nav-btn px-4 py-2 rounded-lg font-semibold tracking-wider uppercase transition text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent">
+                        Find Errors
+                    </button>
+                    <button onclick="switchTab('mastery')" id="nav-mastery" class="nav-btn px-4 py-2 rounded-lg font-semibold tracking-wider uppercase transition text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent">
+                        Final Test
+                    </button>
+                </nav>
+
+                <!-- Audio Toggle & XP Counter -->
+                <div class="flex items-center gap-3 font-mono text-xs">
+                    <button onclick="toggleAudio()" id="audio-btn" class="px-3 py-1.5 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 hover:bg-slate-200 transition uppercase text-[11px]">
+                        Sound: <span id="audio-status-text" class="text-emerald-600 font-bold">ON</span>
+                    </button>
+                    <div class="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-indigo-50 border border-indigo-200">
+                        <span class="text-indigo-600 uppercase text-[11px] font-bold">XP</span>
+                        <span id="total-xp-display" class="text-indigo-950 font-bold">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Bar -->
+        <div class="md:hidden border-t border-slate-200 bg-white px-2 py-2 flex justify-around text-[10px] font-mono tracking-wider uppercase overflow-x-auto">
+            <button onclick="switchTab('lessons')" id="mob-lessons" class="p-2 text-indigo-700 font-bold whitespace-nowrap">Units</button>
+            <button onclick="switchTab('practice')" id="mob-practice" class="p-2 text-slate-600 whitespace-nowrap">Practice</button>
+            <button onclick="switchTab('sentenceFix')" id="mob-sentenceFix" class="p-2 text-slate-600 whitespace-nowrap">Fix Sentences</button>
+            <button onclick="switchTab('textEditor')" id="mob-textEditor" class="p-2 text-slate-600 whitespace-nowrap">Find Errors</button>
+            <button onclick="switchTab('mastery')" id="mob-mastery" class="p-2 text-slate-600 whitespace-nowrap">Final Test</button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= TAB 1: CURRICULUM & LESSON UNITS ================= -->
+        <section id="tab-lessons" class="tab-content space-y-8">
+            <div class="max-w-3xl space-y-3">
+                <div class="inline-block text-[11px] font-mono font-bold uppercase tracking-widest text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-200">
+                    English Grammar Exercises
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-heading font-extrabold tracking-tight text-slate-900">Grammar & Writing Topics</h2>
+                <p class="text-slate-600 text-base leading-relaxed">Pick a topic below. Read quick rules or start practicing directly!</p>
+            </div>
+
+            <!-- Topic Units Grid with Clear Colorful Boxes -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Unit 1 -->
+                <div class="lab-card accent-border-cyan rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-cyan-700 font-bold uppercase tracking-wider">UNIT 01</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-cyan-50 text-cyan-800 text-[10px] font-bold border border-cyan-200">Core Rules</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Capitalization</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Proper nouns, sentence titles, geographic directions, school subjects, and capitalization exceptions.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Rules: North vs the South | French fries | President Jones
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('capitalization')" class="text-xs font-bold uppercase tracking-wider text-cyan-700 hover:text-cyan-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('capitalization')" class="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 2 -->
+                <div class="lab-card accent-border-indigo rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-indigo-700 font-bold uppercase tracking-wider">UNIT 02</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-800 text-[10px] font-bold border border-indigo-200">Verbs</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Irregular Verbs</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Mastering base forms, past simple, and past participle conjugations without "-ed".</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Forms: Go &rarr; Went &rarr; Gone | Freeze &rarr; Froze &rarr; Frozen
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('verbs')" class="text-xs font-bold uppercase tracking-wider text-indigo-700 hover:text-indigo-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('verbs')" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 3 -->
+                <div class="lab-card accent-border-emerald rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-emerald-700 font-bold uppercase tracking-wider">UNIT 03</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200">Voice</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Active vs Passive Voice</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Identifying when the subject performs the action versus receiving the action.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Active: She wrote the paper | Passive: The paper was written
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('activePassive')" class="text-xs font-bold uppercase tracking-wider text-emerald-700 hover:text-emerald-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('activePassive')" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 4 -->
+                <div class="lab-card accent-border-amber rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-amber-700 font-bold uppercase tracking-wider">UNIT 04</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">Modifiers</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Adjectives & Comparison</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Describing nouns, comparative vs superlative forms, and proper placement.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Examples: Tall &rarr; Taller &rarr; Tallest | More beautiful
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('adjectives')" class="text-xs font-bold uppercase tracking-wider text-amber-700 hover:text-amber-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('adjectives')" class="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 5 -->
+                <div class="lab-card accent-border-rose rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-rose-700 font-bold uppercase tracking-wider">UNIT 05</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 text-[10px] font-bold border border-rose-200">Structure</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Prepositions & Phrases</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Recognizing prepositional phrases, objects of prepositions, and correct usage.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Phrases: Into the house | Under the table | With whom
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('prepositions')" class="text-xs font-bold uppercase tracking-wider text-rose-700 hover:text-rose-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('prepositions')" class="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 6 -->
+                <div class="lab-card accent-border-violet rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-violet-700 font-bold uppercase tracking-wider">UNIT 06</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-violet-50 text-violet-800 text-[10px] font-bold border border-violet-200">Connectors</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Conjunctions (FANBOYS)</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Coordinating and subordinating conjunctions for combining clauses smoothly.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            FANBOYS: For, And, Nor, But, Or, Yet, So | Subordinating
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('conjunctions')" class="text-xs font-bold uppercase tracking-wider text-violet-700 hover:text-violet-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('conjunctions')" class="px-4 py-2 rounded-lg bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 7 -->
+                <div class="lab-card accent-border-teal rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-teal-700 font-bold uppercase tracking-wider">UNIT 07</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-800 text-[10px] font-bold border border-teal-200">Punctuation</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Possessives & -S Words</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Punctuation rules for singular, plural, and nouns that naturally end in -s.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Examples: James's house | The boss's desk | The teachers' lounge
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('possessives')" class="text-xs font-bold uppercase tracking-wider text-teal-700 hover:text-teal-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('possessives')" class="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 8 -->
+                <div class="lab-card accent-border-sky rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-sky-700 font-bold uppercase tracking-wider">UNIT 08</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-800 text-[10px] font-bold border border-sky-200">Sentence Flow</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Sentence Rewrites & Fixes</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Fixing incomplete thoughts, joining separate ideas smoothly, and improving word order for clarity.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Focus: Combining thoughts | Clear word order | Fixing double negatives
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('sentenceFixes')" class="text-xs font-bold uppercase tracking-wider text-sky-700 hover:text-sky-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('sentenceFixes')" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Unit 9 -->
+                <div class="lab-card accent-border-purple rounded-xl p-6 flex flex-col justify-between shadow-sm">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between text-xs font-mono">
+                            <span class="text-purple-700 font-bold uppercase tracking-wider">UNIT 09</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-800 text-[10px] font-bold border border-purple-200">Foundations</span>
+                        </div>
+                        <h3 class="text-xl font-heading font-bold text-slate-900 uppercase">Contractions</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Combining words using apostrophes to replace omitted vowels or letters.</p>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs font-mono text-slate-700">
+                            Examples: Cannot &rarr; Can't | Should have &rarr; Should've
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <button onclick="openLessonModal('contractions')" class="text-xs font-bold uppercase tracking-wider text-purple-700 hover:text-purple-900 transition">
+                            Study Notes &rarr;
+                        </button>
+                        <button onclick="startExercise('contractions')" class="px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Practice (30)
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: MULTIPLE CHOICE PRACTICE ================= -->
+        <section id="tab-practice" class="tab-content hidden space-y-8">
+            <!-- Topic Toolbar -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 w-full sm:w-auto font-mono text-xs">
+                    <button onclick="startExercise('capitalization')" id="ex-btn-capitalization" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Capitalization</button>
+                    <button onclick="startExercise('verbs')" id="ex-btn-verbs" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Irregular Verbs</button>
+                    <button onclick="startExercise('activePassive')" id="ex-btn-activePassive" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Active/Passive</button>
+                    <button onclick="startExercise('adjectives')" id="ex-btn-adjectives" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Adjectives</button>
+                    <button onclick="startExercise('prepositions')" id="ex-btn-prepositions" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Prepositions</button>
+                    <button onclick="startExercise('conjunctions')" id="ex-btn-conjunctions" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Conjunctions</button>
+                    <button onclick="startExercise('possessives')" id="ex-btn-possessives" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Possessives</button>
+                    <button onclick="startExercise('sentenceFixes')" id="ex-btn-sentenceFixes" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Sentence Fixes</button>
+                    <button onclick="startExercise('contractions')" id="ex-btn-contractions" class="ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold">Contractions</button>
+                </div>
+                <div class="text-xs font-mono text-indigo-700 uppercase tracking-widest font-bold">
+                    Task <span id="exercise-step">1</span> / <span id="exercise-total">30</span>
+                </div>
+            </div>
+
+            <!-- Active Exercise Panel -->
+            <div class="bg-white rounded-xl border border-slate-200 p-6 sm:p-10 max-w-3xl mx-auto space-y-8 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <span id="exercise-badge" class="text-[11px] font-mono tracking-widest uppercase text-indigo-700 font-extrabold">UNIT PRACTICE</span>
+                        <h3 id="exercise-title" class="text-xl sm:text-2xl font-heading font-bold uppercase tracking-tight text-slate-900 mt-1">Question 1</h3>
+                    </div>
+                    <div class="px-4 py-1.5 rounded-lg bg-slate-100 border border-slate-200 text-xs font-mono text-slate-700">
+                        SCORE: <span id="exercise-score" class="text-emerald-600 font-bold">0</span>
+                    </div>
+                </div>
+
+                <div id="exercise-area" class="space-y-6">
+                    <!-- Injected dynamically via JS -->
+                </div>
+
+                <div id="feedback-box" class="hidden rounded-xl p-4 text-xs font-mono leading-relaxed transition">
+                    <div id="feedback-text"></div>
+                </div>
+
+                <div class="flex items-center justify-between pt-6 border-t border-slate-100 font-mono text-xs">
+                    <button onclick="showHint()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold uppercase tracking-wider border border-slate-300 transition">
+                        Need Hint?
+                    </button>
+                    <button onclick="nextQuestion()" id="next-btn" class="px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                        Next Task &rarr;
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: SENTENCE WRITER & REWRITER ================= -->
+        <section id="tab-sentenceFix" class="tab-content hidden space-y-8">
+            <div class="max-w-3xl mx-auto space-y-3">
+                <div class="inline-block text-[11px] font-mono font-bold uppercase tracking-widest text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-200">
+                    Writing Practice
+                </div>
+                <h2 class="text-3xl font-heading font-extrabold uppercase tracking-tight text-slate-900">Sentence Fixer</h2>
+                <p class="text-slate-600 text-sm">Read the sentence with a mistake. Type the correct sentence in the box below.</p>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 p-6 sm:p-10 max-w-3xl mx-auto space-y-6 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 font-mono text-xs">
+                    <span class="text-indigo-700 font-bold uppercase tracking-widest">SENTENCE <span id="write-q-num">1</span> / <span id="write-q-total">10</span></span>
+                    <span class="text-slate-500 uppercase">REWRITE CORRECTLY</span>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-2">
+                    <span class="text-[10px] font-mono uppercase text-rose-600 font-bold">Incorrect Sentence:</span>
+                    <div id="write-original" class="text-base sm:text-lg font-medium text-slate-900">
+                        <!-- Injected dynamically -->
+                    </div>
+                </div>
+
+                <div class="space-y-2 font-mono text-xs">
+                    <label class="block text-slate-700 font-bold uppercase">Type Your Corrected Sentence:</label>
+                    <textarea id="write-user-input" rows="3" class="w-full p-4 rounded-xl border border-slate-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-sm font-sans text-slate-900 leading-relaxed outline-none transition" placeholder="Type here..."></placeholder="Type your corrected version here..."></textarea>
+                </div>
+
+                <div id="write-feedback" class="hidden rounded-xl p-4 text-xs font-mono leading-relaxed transition"></div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 font-mono text-xs">
+                    <button onclick="showWriteHint()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold uppercase tracking-wider border border-slate-300 transition">
+                        Show Hint
+                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="checkSentenceWrite()" class="px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                            Check Answer
+                        </button>
+                        <button onclick="nextWriteQuestion()" id="write-next-btn" class="hidden px-6 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-wider transition shadow-sm">
+                            Next Sentence &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: INTERACTIVE TEXT PROOFREADER ================= -->
+        <section id="tab-textEditor" class="tab-content hidden space-y-8">
+            <div class="max-w-3xl mx-auto space-y-3">
+                <div class="inline-block text-[11px] font-mono font-bold uppercase tracking-widest text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full border border-indigo-200">
+                    Text Review
+                </div>
+                <h2 class="text-3xl font-heading font-extrabold uppercase tracking-tight text-slate-900">Find the Errors</h2>
+                <p class="text-slate-600 text-sm">Read the text below. Click on any word that is wrong, then select the right correction from the options.</p>
+            </div>
+
+            <div class="bg-white rounded-xl border border-slate-200 p-6 sm:p-10 max-w-3xl mx-auto space-y-6 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 font-mono text-xs">
+                    <span id="proof-title" class="text-indigo-700 font-bold uppercase tracking-widest">PASSAGE 1 OF 2</span>
+                    <span class="text-emerald-700 font-bold">ERRORS FOUND: <span id="proof-found-count">0</span> / <span id="proof-total-count">0</span></span>
+                </div>
+
+                <div id="proof-passage-box" class="p-6 rounded-xl bg-slate-50 border border-slate-200 text-base leading-loose font-sans text-slate-800 space-x-1">
+                    <!-- Interactive clickable words injected here -->
+                </div>
+
+                <div id="proof-correction-menu" class="hidden p-4 rounded-xl bg-indigo-50 border border-indigo-200 font-mono text-xs space-y-3">
+                    <div class="font-bold text-indigo-900 uppercase">Selected word: "<span id="selected-word-text"></span>" &mdash; Choose correction:</div>
+                    <div id="correction-options-container" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <div id="proof-feedback" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+
+                <div class="flex justify-between items-center pt-4 border-t border-slate-100 font-mono text-xs">
+                    <button onclick="startProofPassage((state.currentProofIdx + 1) % proofPassages.length)" class="px-5 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold uppercase tracking-wider border border-slate-300 transition">
+                        Next Passage
+                    </button>
+                    <button onclick="checkPassageComplete()" class="px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold uppercase tracking-wider transition shadow-sm hover:scale-105">
+                        Finish Passage
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 6: MASTERY TEST ================= -->
+        <section id="tab-mastery" class="tab-content hidden space-y-8">
+            <div id="quiz-intro" class="bg-white rounded-xl border border-slate-200 p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-6 shadow-md">
+                <div class="text-xs font-mono uppercase tracking-widest text-indigo-700 font-bold">Grammar Quiz</div>
+                <h2 class="text-3xl font-heading font-extrabold uppercase tracking-tight text-slate-900">Grammar Final Test</h2>
+                <p class="text-slate-600 text-sm leading-relaxed max-w-lg mx-auto">
+                    Test your knowledge! Answer 20 questions chosen at random from all the grammar topics.
+                </p>
+                <div class="grid grid-cols-3 gap-3 text-left max-w-md mx-auto text-xs font-mono bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div class="text-center">
+                        <div class="text-slate-500 uppercase text-[10px]">Questions</div>
+                        <div class="text-sm font-bold text-indigo-900 mt-1">20 Random</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-slate-500 uppercase text-[10px]">Level</div>
+                        <div class="text-sm font-bold text-indigo-900 mt-1">Grades 7–9</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-slate-500 uppercase text-[10px]">Passing Score</div>
+                        <div class="text-sm font-bold text-emerald-600 mt-1">80%+</div>
+                    </div>
+                </div>
+                <button onclick="startMasteryQuiz()" class="px-8 py-3.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-widest transition shadow-md hover:scale-105">
+                    Start Test
+                </button>
+            </div>
+
+            <!-- Active Test Interface -->
+            <div id="quiz-active" class="hidden bg-white rounded-xl border border-slate-200 p-6 sm:p-10 max-w-3xl mx-auto space-y-8 shadow-md">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div>
+                        <span class="text-[10px] font-mono uppercase tracking-widest text-indigo-700 font-bold">FINAL TEST</span>
+                        <h3 class="text-lg font-heading font-bold uppercase text-slate-900 mt-0.5">Question <span id="quiz-q-num">1</span> / 20</h3>
+                    </div>
+                    <div class="w-36 bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                        <div id="quiz-progress-bar" class="bg-gradient-to-r from-indigo-500 to-cyan-500 h-full transition-all duration-300" style="width: 5%;"></div>
+                    </div>
+                </div>
+
+                <div id="quiz-question-box" class="space-y-6">
+                    <!-- Injected Quiz Qs -->
+                </div>
+
+                <div id="quiz-feedback" class="hidden p-4 rounded-xl text-xs font-mono"></div>
+
+                <div class="flex justify-end pt-6 border-t border-slate-100">
+                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider transition shadow-sm hover:scale-105">
+                        Submit Answer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Results Panel -->
+            <div id="quiz-results" class="hidden bg-white rounded-xl border border-slate-200 p-8 text-center max-w-xl mx-auto space-y-6 shadow-xl">
+                <div class="text-xs font-mono uppercase tracking-widest text-indigo-700 font-bold">Results</div>
+                <h2 id="results-heading" class="text-3xl font-heading font-extrabold uppercase text-slate-900">Test Complete</h2>
+                <p id="results-sub" class="text-slate-600 text-sm">Here is your score on the grammar test.</p>
+                
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 max-w-xs mx-auto space-y-2 font-mono">
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest">Final Score</div>
+                    <div id="results-score" class="text-4xl font-extrabold text-emerald-600">18 / 20</div>
+                    <div id="results-percent" class="text-xs text-slate-600">(90% Accuracy)</div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 font-mono text-xs uppercase">
+                    <button onclick="startMasteryQuiz()" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-sm hover:scale-105">
+                        Try Again
+                    </button>
+                    <button onclick="switchTab('lessons')" class="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 transition">
+                        Back to Topics
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Application State
+        const state = {
+            xp: 0,
+            questionsAnswered: 0,
+            questionsCorrect: 0,
+            currentExerciseTopic: 'capitalization',
+            currentQuestionIdx: 0,
+            exerciseScore: 0,
+            // Sentence Rewrite State
+            writeCurrentIdx: 0,
+            // Proofreader State
+            currentProofIdx: 0,
+            proofFoundCount: 0,
+            // Mastery Quiz State
+            quizQuestions: [],
+            quizCurrentIdx: 0,
+            quizScore: 0,
+            audioEnabled: true
+        };
+
+        // Audio Effects Synthesizer
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (!state.audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.12);
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.15);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.18);
+                } else if (type === 'complete') {
+                    confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 }, colors: ['#4f46e5', '#10b981', '#f59e0b', '#06b6d4'] });
+                }
+            } catch (e) {
+                console.log('Audio error:', e);
+            }
+        }
+
+        function toggleAudio() {
+            state.audioEnabled = !state.audioEnabled;
+            const el = document.getElementById('audio-status-text');
+            el.innerText = state.audioEnabled ? 'ON' : 'OFF';
+            el.className = state.audioEnabled ? 'text-emerald-600 font-bold' : 'text-slate-400 font-bold';
+        }
+
+        // Lesson Study Notes
+        const lessonNotesData = {
+            capitalization: {
+                title: "Capitalization Rules",
+                content: `
+                    <p class="font-semibold text-indigo-900">Key Capitalization Standards for Grades 7–9:</p>
+                    <ul class="space-y-2 font-mono text-xs">
+                        <li class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">1. Proper Nouns & Adjectives:</strong> Capitalize specific names of people, places, and languages.<br>
+                            &bull; <i>Examples:</i> Michael, Wilson High School, French fries, Italian food.
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">2. Directions vs Geographic Regions:</strong> Lowercase north, south, east, west when indicating direction. Capitalize when referring to a region.<br>
+                            &bull; <i>Examples:</i> Drive south down Main St. vs. He was raised in the South.
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">3. Titles with Names:</strong> Capitalize titles before a name (Mayor Jones, President Seymour). Lowercase titles standing alone (the mayor spoke).
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">4. School Courses & Seasons:</strong> Seasons (summer, winter) are lowercase. General subjects are lowercase (history, science), but specific courses and languages are capitalized (French, Algebra II).
+                        </li>
+                    </ul>
+                `
+            },
+            verbs: {
+                title: "Irregular Verbs",
+                content: `
+                    <p class="font-semibold text-indigo-900">Verb Conjugation Framework</p>
+                    <p class="text-xs">Regular verbs add "-ed" for past tense. Irregular verbs change vowels, consonants, or stay identical across forms.</p>
+                    
+                    <table class="w-full text-left font-mono text-xs border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-indigo-700">
+                                <th class="py-2">Base Form</th>
+                                <th class="py-2">Past Simple</th>
+                                <th class="py-2">Past Participle (has/have)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-slate-800">
+                            <tr><td class="py-1.5">go</td><td>went</td><td>gone</td></tr>
+                            <tr><td class="py-1.5">freeze</td><td>froze</td><td>frozen</td></tr>
+                            <tr><td class="py-1.5">shrink</td><td>shrank</td><td>shrunk</td></tr>
+                            <tr><td class="py-1.5">drink</td><td>drank</td><td>drunk</td></tr>
+                            <tr><td class="py-1.5">swim</td><td>swam</td><td>swum</td></tr>
+                            <tr><td class="py-1.5">lead</td><td>led</td><td>led</td></tr>
+                        </tbody>
+                    </table>
+                `
+            },
+            activePassive: {
+                title: "Active vs Passive Voice",
+                content: `
+                    <p class="font-semibold text-emerald-900">Understanding Verb Voice</p>
+                    <div class="space-y-3 font-mono text-xs">
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">Active Voice:</strong> The subject performs the action directly.<br>
+                            &bull; <i>"The student wrote the essay."</i>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <strong class="text-slate-900">Passive Voice:</strong> The subject receives the action.<br>
+                            &bull; <i>"The essay was written by the student."</i>
+                        </div>
+                    </div>
+                `
+            },
+            adjectives: { title: "Adjectives & Comparisons", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Use comparative (-er or more) when comparing 2 items. Use superlative (-est or most) when comparing 3 or more items.</p>" },
+            prepositions: { title: "Prepositions & Phrases", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Prepositional phrases begin with a preposition (under, in, into, between, with) and tell where or when something happens.</p>" },
+            conjunctions: { title: "Conjunctions (FANBOYS)", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Coordinating conjunctions connect words or sentences: For, And, Nor, But, Or, Yet, So (FANBOYS).</p>" },
+            possessives: { title: "Possessives & -S Words", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Singular nouns take 's (e.g. James's car, boss's office). Plurals ending in S take an apostrophe only (teachers' lounge).</p>" },
+            sentenceFixes: { title: "Improving Sentence Clarity", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Combine two full thoughts using a semicolon, period, or 'comma + conjunction'. Place descriptive words directly next to the word they describe.</p>" },
+            contractions: { title: "Contractions", content: "<p class='text-xs font-mono bg-slate-50 p-3 border border-slate-200 rounded-lg'>Replace missing letters with an apostrophe: cannot &rarr; can't, would have &rarr; would've.</p>" }
+        };
+
+        // Practice Question Sets (Practical focus without technical jargon)
+        const practiceData = {
+            capitalization: [
+                { q: "Select the correctly capitalized sentence:", answer: "We visited New York City during summer break.", hint: "Specific city names are capitalized; seasons stay lowercase.", options: ["We visited New York City during summer break.", "We visited new york city during Summer break.", "We visited New York city during Summer break."] },
+                { q: "Select the correctly capitalized direction/region:", answer: "He moved to the South after living up north.", hint: "Regions are capitalized; general directions stay lowercase.", options: ["He moved to the South after living up north.", "He moved to the south after living up North.", "He moved to the South after living up North."] },
+                { q: "Select correct capitalization for titles:", answer: "I met Mayor Jones and the company president.", hint: "Capitalize titles before names; lowercase titles standing alone.", options: ["I met Mayor Jones and the company president.", "I met mayor Jones and the company President.", "I met Mayor Jones and the company President."] }
+            ],
+            verbs: [
+                { q: "Choose the correct past form: 'Yesterday the lake ____.'", answer: "froze", hint: "Past tense of freeze is froze.", options: ["froze", "frozen", "freezed"] },
+                { q: "Choose the correct participle: 'The lake has ____ over.'", answer: "frozen", hint: "After 'has' or 'have', use 'frozen'.", options: ["frozen", "froze", "freezed"] },
+                { q: "Choose the correct past form: 'He ____ the shirt in the dryer.'", answer: "shrank", hint: "Past tense of shrink is shrank.", options: ["shrank", "shrunk", "shrinked"] }
+            ],
+            activePassive: [
+                { q: "Identify sentence style: 'The rookie threw the ball.'", answer: "Active (subject performs action)", hint: "Rookie (subject) performs the action (threw).", options: ["Active (subject performs action)", "Passive (subject receives action)"] },
+                { q: "Identify sentence style: 'The ball was thrown by the rookie.'", answer: "Passive (subject receives action)", hint: "Subject receives the action.", options: ["Passive (subject receives action)", "Active (subject performs action)"] }
+            ],
+            adjectives: [
+                { q: "Select the correct comparison when comparing 2 sisters:", answer: "taller", hint: "Comparing 2 items requires comparative (-er).", options: ["taller", "tallest"] },
+                { q: "Select the correct comparison when comparing 3 brothers:", answer: "tallest", hint: "Comparing 3+ items requires superlative (-est).", options: ["tallest", "taller"] }
+            ],
+            prepositions: [
+                { q: "Identify the phrase showing where the cat is: 'The cat is under the table.'", answer: "under the table", hint: "Starts with the location word 'under'.", options: ["under the table", "is under", "the cat is"] }
+            ],
+            conjunctions: [
+                { q: "Which word best connects these thoughts? 'I wanted to go, ____ I was too tired.'", answer: "but", hint: "Use 'but' to show a contrast.", options: ["but", "so", "or"] }
+            ],
+            possessives: [
+                { q: "Select the correct way to show ownership for ONE boss:", answer: "the boss's office", hint: "Singular noun ending in -s takes 's.", options: ["the boss's office", "the boss' office", "the bosses office"] }
+            ],
+            sentenceFixes: [
+                { q: "Select the best way to join these two complete thoughts: 'I read, my sister sewed.'", answer: "I read, and my sister sewed.", hint: "Join two full sentences with a comma and 'and', or use a semicolon.", options: ["I read, and my sister sewed.", "I read my sister sewed.", "I read, my sister sewed."] }
+            ],
+            contractions: [
+                { q: "Form the contraction for 'do not':", answer: "don't", hint: "Drop 'o' and add an apostrophe.", options: ["don't", "dont", "do'nt"] }
+            ]
+        };
+
+        // SENTENCE WRITER / REWRITER DATA
+        const sentenceWriteData = [
+            { original: "i went to new york city, my brother stayed home.", target: ["I went to New York City, and my brother stayed home.", "I went to New York City; my brother stayed home.", "I went to New York City. My brother stayed home."], hint: "Capitalize 'I' and 'New York City'. Connect the two complete thoughts properly." },
+            { original: "Driving down the road my car broke down.", target: ["While I was driving down the road, my car broke down.", "As I was driving down the road, my car broke down."], hint: "Make it clear who was driving down the road." },
+            { original: "She don't have no time for games.", target: ["She doesn't have any time for games.", "She has no time for games."], hint: "Correct the double negative ('don't have no')." },
+            { original: "The three teachers lounge was painted blue.", target: ["The three teachers' lounge was painted blue."], hint: "Make 'teachers' plural possessive (teachers')." },
+            { original: "He is the tallest of the two brothers.", target: ["He is the taller of the two brothers."], hint: "Use comparative '-er' when comparing exactly two people." }
+        ];
+
+        // PROOFREADING PASSAGES DATA
+        const proofPassages = [
+            {
+                title: "Passage 1: Vacation Story",
+                words: [
+                    { text: "Last", isError: false }, { text: "summer,", isError: false },
+                    { text: "my", isError: false }, { text: "family", isError: false },
+                    { text: "visited", isError: false }, { text: "new", isError: true, correct: "New", options: ["new", "New"] },
+                    { text: "york.", isError: true, correct: "York.", options: ["york.", "York."] },
+                    { text: "The", isError: false }, { text: "cat", isError: false },
+                    { text: "licked", isError: false }, { text: "it's", isError: true, correct: "its", options: ["it's", "its"] },
+                    { text: "paws", isError: false }, { text: "in", isError: false },
+                    { text: "the", isError: false }, { text: "hotel.", isError: false },
+                    { text: "We", isError: false }, { text: "go", isError: true, correct: "went", options: ["go", "went"] },
+                    { text: "to", isError: false }, { text: "a", isError: false },
+                    { text: "great", isError: false }, { text: "restaurant.", isError: false }
+                ]
+            },
+            {
+                title: "Passage 2: School Announcement",
+                words: [
+                    { text: "Principal", isError: false }, { text: "Jones", isError: false },
+                    { text: "announced", isError: false }, { text: "that", isError: false },
+                    { text: "james's", isError: true, correct: "James's", options: ["james's", "James's"] },
+                    { text: "project", isError: false }, { text: "was", isError: false },
+                    { text: "the", isError: false }, { text: "best.", isError: false },
+                    { text: "All", isError: false }, { text: "students", isError: false },
+                    { text: "must", isError: false }, { text: "bring", isError: false },
+                    { text: "there", isError: true, correct: "their", options: ["there", "their"] },
+                    { text: "books.", isError: false }
+                ]
+            }
+        ];
+
+        // EXPANDED A2 - B1 ENGLISH VOCABULARY DATA
+        const vocabWords = [
+            { word: "Accomplish", pos: "verb", level: "B1", def: "To complete or achieve something successfully.", ex: "She accomplished all her academic goals this semester." },
+            { word: "Advantage", pos: "noun", level: "A2", def: "A condition or feature that helps you or makes you better.", ex: "Knowing two languages gives you a great advantage." },
+            { word: "Ancient", pos: "adjective", level: "A2", def: "Belonging to a period of history that is thousands of years in the past.", ex: "We studied ancient history in school today." },
+            { word: "Challenge", pos: "noun", level: "B1", def: "Something that needs great effort in order to be done successfully.", ex: "Learning grammar can be an exciting challenge." },
+            { word: "Encourage", pos: "verb", level: "B1", def: "To give someone confidence or hope to do something.", ex: "My teacher encouraged me to write stories." },
+            { word: "Environment", pos: "noun", level: "B1", def: "The air, water, and land in or on which people and animals live.", ex: "Recycling helps protect our environment." },
+            { word: "Essential", pos: "adjective", level: "B1", def: "Extremely important and necessary.", ex: "Water is essential for living organisms." },
+            { word: "Frequently", pos: "adverb", level: "A2", def: "Happening often or at short intervals.", ex: "He frequently visits the public library." },
+            { word: "Hesitate", pos: "verb", level: "B1", def: "To pause before saying or doing something due to uncertainty.", ex: "Do not hesitate to ask questions if you need help." },
+            { word: "Introduce", pos: "verb", level: "A2", def: "To make something or someone known to other people.", ex: "Let me introduce you to my classmate." },
+            { word: "Necessary", pos: "adjective", level: "A2", def: "Needed in order to achieve a particular result.", ex: "It is necessary to bring your notebook to class." },
+            { word: "Opportunity", pos: "noun", level: "B1", def: "A situation in which it is possible for you to do something.", ex: "Studying abroad is a wonderful opportunity." },
+            { word: "Provide", pos: "verb", level: "B1", def: "To give someone something that they need.", ex: "The school provides textbooks for all students." },
+            { word: "Require", pos: "verb", level: "B1", def: "To need something or make something necessary.", ex: "This exam requires careful preparation." },
+            { word: "Variety", pos: "noun", level: "B1", def: "A choice or collection of many different things.", ex: "The library has a wide variety of English books." }
+        ];
+
+        const vocabQuizData = [
+            { q: "Choose the word that means 'Extremely important and necessary':", options: ["Essential", "Optional", "Ancient"], answer: "Essential" },
+            { q: "What does 'Hesitate' mean in English?", options: ["To move fast", "To pause due to uncertainty", "To speak loudly"], answer: "To pause due to uncertainty" },
+            { q: "Select the sentence that uses 'Advantage' correctly:", options: ["Knowing English gives you a clear advantage.", "The advantage rain was very dry.", "She advantage her homework."], answer: "Knowing English gives you a clear advantage." },
+            { q: "Choose the word that means 'To give someone confidence or support':", options: ["Encourage", "Hesitate", "Require"], answer: "Encourage" },
+            { q: "What does 'Provide' mean?", options: ["To take away", "To give or supply what is needed", "To destroy"], answer: "To give or supply what is needed" }
+        ];
+
+        // NAVIGATION & TAB SWITCHING
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-lg font-semibold tracking-wider uppercase transition text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent";
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-4 py-2 rounded-lg font-bold tracking-wider uppercase transition text-indigo-700 bg-indigo-50 border border-indigo-200";
+            }
+
+            if (tabId === 'sentenceFix') renderSentenceWrite();
+            if (tabId === 'textEditor') startProofPassage(0);
+        }
+
+        // LESSON MODAL
+        function openLessonModal(topicKey) {
+            const data = lessonNotesData[topicKey];
+            if (!data) return;
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-body').innerHTML = data.content;
+            document.getElementById('lesson-modal').classList.remove('hidden');
+        }
+        function closeLessonModal() {
+            document.getElementById('lesson-modal').classList.add('hidden');
+        }
+
+        // MULTIPLE CHOICE PRACTICE
+        function startExercise(topicKey) {
+            state.currentExerciseTopic = topicKey;
+            state.currentQuestionIdx = 0;
+            state.exerciseScore = 0;
+
+            document.querySelectorAll('.ex-select-btn').forEach(b => {
+                b.className = "ex-select-btn px-3 py-1.5 rounded-lg transition border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 uppercase font-semibold";
+            });
+            const activeBtn = document.getElementById(`ex-btn-${topicKey}`);
+            if (activeBtn) {
+                activeBtn.className = "ex-select-btn px-3 py-1.5 rounded-lg transition border border-indigo-300 bg-indigo-50 text-indigo-800 font-bold uppercase shadow-sm";
+            }
+
+            switchTab('practice');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const list = practiceData[state.currentExerciseTopic] || practiceData['capitalization'];
+            const qData = list[state.currentQuestionIdx];
+
+            document.getElementById('exercise-step').innerText = state.currentQuestionIdx + 1;
+            document.getElementById('exercise-total').innerText = list.length;
+            document.getElementById('exercise-score').innerText = state.exerciseScore;
+            
+            document.getElementById('exercise-badge').innerText = `${state.currentExerciseTopic.toUpperCase()} PRACTICE`;
+            document.getElementById('exercise-title').innerText = `Task ${state.currentQuestionIdx + 1} of ${list.length}`;
+
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.className = "hidden rounded-xl p-4 text-xs font-mono leading-relaxed transition";
+
+            const container = document.getElementById('exercise-area');
+            let html = `
+                <div class="text-base sm:text-lg text-slate-900 font-semibold bg-slate-50 p-6 rounded-xl border border-slate-200">
+                    ${qData.q}
+                </div>
+                <div class="grid grid-cols-1 gap-3 pt-2 font-mono text-xs">
+            `;
+
+            qData.options.forEach((opt) => {
+                const safeOpt = opt.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                html += `
+                    <button onclick="checkAnswer('${safeOpt}')" class="opt-btn p-4 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 hover:border-indigo-400 text-left transition flex items-center justify-between group shadow-sm">
+                        <span class="text-slate-800 group-hover:text-indigo-900 font-medium">${opt}</span>
+                        <span class="text-indigo-600 font-bold">&rarr;</span>
+                    </button>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function checkAnswer(selectedOpt) {
+            const list = practiceData[state.currentExerciseTopic] || practiceData['capitalization'];
+            const qData = list[state.currentQuestionIdx];
+            const feedbackBox = document.getElementById('feedback-box');
+
+            document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+
+            if (selectedOpt === qData.answer) {
+                state.exerciseScore += 10;
+                state.xp += 10;
+                playSound('correct');
+
+                feedbackBox.className = "rounded-xl p-4 text-xs font-mono leading-relaxed bg-emerald-50 border border-emerald-200 text-emerald-900";
+                feedbackBox.innerHTML = `<strong>CORRECT ANSWER!</strong> +10 XP earned.`;
+            } else {
+                playSound('wrong');
+                feedbackBox.className = "rounded-xl p-4 text-xs font-mono leading-relaxed bg-rose-50 border border-rose-200 text-rose-900";
+                feedbackBox.innerHTML = `<strong>INCORRECT.</strong> Expected answer: <span class="underline font-bold">${qData.answer}</span>`;
+            }
+
+            document.getElementById('exercise-score').innerText = state.exerciseScore;
+            document.getElementById('total-xp-display').innerText = state.xp;
+        }
+
+        function showHint() {
+            const list = practiceData[state.currentExerciseTopic] || practiceData['capitalization'];
+            const qData = list[state.currentQuestionIdx];
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.className = "rounded-xl p-4 text-xs font-mono leading-relaxed bg-amber-50 border border-amber-200 text-amber-900";
+            feedbackBox.innerHTML = `<strong>HINT:</strong> ${qData.hint}`;
+        }
+
+        function nextQuestion() {
+            const list = practiceData[state.currentExerciseTopic] || practiceData['capitalization'];
+            if (state.currentQuestionIdx < list.length - 1) {
+                state.currentQuestionIdx++;
+                renderQuestion();
+            } else {
+                playSound('complete');
+                const container = document.getElementById('exercise-area');
+                container.innerHTML = `
+                    <div class="text-center py-10 space-y-4">
+                        <div class="text-xs font-mono uppercase tracking-widest text-emerald-600 font-bold">MODULE COMPLETED</div>
+                        <h3 class="text-2xl font-heading font-bold uppercase text-slate-900">All Tasks Finished!</h3>
+                        <p class="text-slate-600 text-sm">Final score: <strong class="text-emerald-600">${state.exerciseScore} points</strong>.</p>
+                    </div>
+                `;
+                document.getElementById('feedback-box').className = "hidden";
+            }
+        }
+
+        // NEW FEATURE 1 LOGIC: SENTENCE WRITER
+        function renderSentenceWrite() {
+            const item = sentenceWriteData[state.writeCurrentIdx];
+            document.getElementById('write-q-num').innerText = state.writeCurrentIdx + 1;
+            document.getElementById('write-q-total').innerText = sentenceWriteData.length;
+            document.getElementById('write-original').innerText = item.original;
+            document.getElementById('write-user-input').value = "";
+            document.getElementById('write-feedback').className = "hidden";
+            document.getElementById('write-next-btn').classList.add('hidden');
+        }
+
+        function checkSentenceWrite() {
+            const item = sentenceWriteData[state.writeCurrentIdx];
+            const userVal = document.getElementById('write-user-input').value.trim();
+            const feedback = document.getElementById('write-feedback');
+
+            const isCorrect = item.target.some(target => userVal.toLowerCase() === target.toLowerCase());
+
+            if (isCorrect) {
+                state.xp += 15;
+                playSound('correct');
+                feedback.className = "rounded-xl p-4 text-xs font-mono bg-emerald-50 border border-emerald-200 text-emerald-900";
+                feedback.innerHTML = `<strong>EXCELLENT WRITING!</strong> Your sentence is grammatically correct. +15 XP`;
+                document.getElementById('write-next-btn').classList.remove('hidden');
+            } else {
+                playSound('wrong');
+                feedback.className = "rounded-xl p-4 text-xs font-mono bg-amber-50 border border-amber-200 text-amber-900";
+                feedback.innerHTML = `<strong>NOT QUITE.</strong> Compare with model target:<br><span class="font-bold text-slate-900 mt-1 block">"${item.target[0]}"</span>`;
+                document.getElementById('write-next-btn').classList.remove('hidden');
+            }
+            document.getElementById('total-xp-display').innerText = state.xp;
+        }
+
+        function showWriteHint() {
+            const item = sentenceWriteData[state.writeCurrentIdx];
+            const feedback = document.getElementById('write-feedback');
+            feedback.className = "rounded-xl p-4 text-xs font-mono bg-indigo-50 border border-indigo-200 text-indigo-900";
+            feedback.innerHTML = `<strong>RULE HINT:</strong> ${item.hint}`;
+        }
+
+        function nextWriteQuestion() {
+            if (state.writeCurrentIdx < sentenceWriteData.length - 1) {
+                state.writeCurrentIdx++;
+                renderSentenceWrite();
+            } else {
+                playSound('complete');
+                document.getElementById('write-original').innerText = "All sentence writing exercises complete!";
+                document.getElementById('write-user-input').classList.add('hidden');
+            }
+        }
+
+        // NEW FEATURE 2 LOGIC: PROOFREADING PASSAGE EDITOR
+        let selectedWordObj = null;
+        function startProofPassage(idx) {
+            state.currentProofIdx = idx;
+            const pData = proofPassages[idx];
+            document.getElementById('proof-title').innerText = pData.title.toUpperCase();
+            
+            let totalErrors = pData.words.filter(w => w.isError).length;
+            document.getElementById('proof-total-count').innerText = totalErrors;
+            document.getElementById('proof-found-count').innerText = "0";
+
+            const container = document.getElementById('proof-passage-box');
+            container.innerHTML = "";
+
+            pData.words.forEach((wObj, wIdx) => {
+                const span = document.createElement('span');
+                span.className = 'error-word';
+                span.innerText = wObj.text;
+                span.onclick = () => onWordClick(wObj, span);
+                container.appendChild(span);
+            });
+        }
+
+        function onWordClick(wObj, spanEl) {
+            selectedWordObj = { wObj, spanEl };
+            const menu = document.getElementById('proof-correction-menu');
+            document.getElementById('selected-word-text').innerText = wObj.text;
+            
+            const optionsBox = document.getElementById('correction-options-container');
+            optionsBox.innerHTML = "";
+
+            const opts = wObj.options || [wObj.text, "Corrected"];
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "px-3 py-1.5 rounded bg-white border border-indigo-300 hover:bg-indigo-600 hover:text-white transition font-mono text-xs";
+                btn.innerText = opt;
+                btn.onclick = () => applyWordCorrection(opt);
+                optionsBox.appendChild(btn);
+            });
+
+            menu.classList.remove('hidden');
+        }
+
+        function applyWordCorrection(chosenOpt) {
+            if (!selectedWordObj) return;
+            const { wObj, spanEl } = selectedWordObj;
+
+            if (wObj.isError && chosenOpt === wObj.correct) {
+                spanEl.innerText = chosenOpt;
+                spanEl.className = 'error-word fixed';
+                state.xp += 10;
+                playSound('correct');
+                let found = parseInt(document.getElementById('proof-found-count').innerText) + 1;
+                document.getElementById('proof-found-count').innerText = found;
+            } else {
+                playSound('wrong');
+            }
+            document.getElementById('proof-correction-menu').classList.add('hidden');
+            document.getElementById('total-xp-display').innerText = state.xp;
+        }
+
+        function checkPassageComplete() {
+            playSound('complete');
+            const fb = document.getElementById('proof-feedback');
+            fb.className = "p-4 rounded-xl text-xs font-mono bg-emerald-50 border border-emerald-200 text-emerald-900";
+            fb.innerText = "Passage review submitted! Great job identifying errors.";
+        }
+
+        // NEW FEATURE 3 LOGIC: VOCABULARY HUB
+        function switchVocabSubTab(sub) {
+            document.getElementById('vocab-sub-flashcards').classList.add('hidden');
+            document.getElementById('vocab-sub-quiz').classList.add('hidden');
+
+            document.getElementById('vocab-tab-flashcards').className = "px-5 py-2 rounded-lg font-bold uppercase border border-slate-300 bg-slate-100 text-slate-700 hover:bg-slate-200";
+            document.getElementById('vocab-tab-quiz').className = "px-5 py-2 rounded-lg font-bold uppercase border border-slate-300 bg-slate-100 text-slate-700 hover:bg-slate-200";
+
+            if (sub === 'flashcards') {
+                document.getElementById('vocab-sub-flashcards').classList.remove('hidden');
+                document.getElementById('vocab-tab-flashcards').className = "px-5 py-2 rounded-lg font-bold uppercase border border-indigo-500 bg-indigo-600 text-white shadow-sm";
+                renderVocabCard();
+            } else {
+                document.getElementById('vocab-sub-quiz').classList.remove('hidden');
+                document.getElementById('vocab-tab-quiz').className = "px-5 py-2 rounded-lg font-bold uppercase border border-indigo-500 bg-indigo-600 text-white shadow-sm";
+                renderVocabQuiz();
+            }
+        }
+
+        function renderVocabCard() {
+            const v = vocabWords[state.vocabCardIdx];
+            document.getElementById('card-num-display').innerText = state.vocabCardIdx + 1;
+            document.getElementById('card-total-display').innerText = vocabWords.length;
+            document.getElementById('card-word-title').innerText = v.word;
+            document.getElementById('card-word-pos').innerText = `${v.pos} • Level ${v.level}`;
+            document.getElementById('card-word-def').innerText = v.def;
+            document.getElementById('card-word-ex').innerText = `"${v.ex}"`;
+            
+            // Reset rotation
+            document.getElementById('flashcard-inner').classList.remove('rotate-y-180');
+        }
+
+        let isFlipped = false;
+        function flipVocabCard() {
+            isFlipped = !isFlipped;
+            const inner = document.getElementById('flashcard-inner');
+            if (isFlipped) inner.classList.add('rotate-y-180');
+            else inner.classList.remove('rotate-y-180');
+        }
+
+        function nextVocabCard() {
+            isFlipped = false;
+            state.vocabCardIdx = (state.vocabCardIdx + 1) % vocabWords.length;
+            renderVocabCard();
+        }
+
+        function prevVocabCard() {
+            isFlipped = false;
+            state.vocabCardIdx = (state.vocabCardIdx - 1 + vocabWords.length) % vocabWords.length;
+            renderVocabCard();
+        }
+
+        function renderVocabQuiz() {
+            const q = vocabQuizData[state.vocabQuizIdx];
+            const area = document.getElementById('vocab-quiz-area');
+            let html = `
+                <div class="text-xs font-mono text-indigo-700 uppercase font-bold">VOCAB QUIZ ${state.vocabQuizIdx + 1} OF ${vocabQuizData.length}</div>
+                <div class="text-lg font-semibold text-slate-900">${q.q}</div>
+                <div class="space-y-2 font-mono text-xs">
+            `;
+            q.options.forEach(opt => {
+                html += `
+                    <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                        <input type="radio" name="v-opt" value="${opt}" class="accent-indigo-600">
+                        <span class="text-slate-800 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+            html += `</div>`;
+            area.innerHTML = html;
+        }
+
+        function nextVocabQuizQuestion() {
+            const sel = document.querySelector('input[name="v-opt"]:checked');
+            if (!sel) return;
+
+            const q = vocabQuizData[state.vocabQuizIdx];
+            if (sel.value === q.answer) {
+                state.xp += 10;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+
+            if (state.vocabQuizIdx < vocabQuizData.length - 1) {
+                state.vocabQuizIdx++;
+                renderVocabQuiz();
+            } else {
+                playSound('complete');
+                document.getElementById('vocab-quiz-area').innerHTML = "<div class='text-center text-lg font-bold text-slate-900 py-6'>Vocabulary Quiz Completed!</div>";
+            }
+            document.getElementById('total-xp-display').innerText = state.xp;
+        }
+
+        // MASTERY QUIZ LOGIC
+        function startMasteryQuiz() {
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('quiz-active').classList.remove('hidden');
+
+            let allQs = [];
+            Object.keys(practiceData).forEach(topic => {
+                practiceData[topic].forEach(q => {
+                    allQs.push({ ...q, topic: topic.toUpperCase() });
+                });
+            });
+
+            state.quizQuestions = allQs.sort(() => Math.random() - 0.5).slice(0, 20);
+            state.quizCurrentIdx = 0;
+            state.quizScore = 0;
+
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const qData = state.quizQuestions[state.quizCurrentIdx];
+            document.getElementById('quiz-q-num').innerText = state.quizCurrentIdx + 1;
+            
+            const pct = Math.round(((state.quizCurrentIdx + 1) / state.quizQuestions.length) * 100);
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+
+            const box = document.getElementById('quiz-question-box');
+            let html = `
+                <div class="text-[10px] font-mono text-indigo-700 uppercase tracking-widest font-bold">${qData.topic} UNIT</div>
+                <div class="text-base sm:text-lg text-slate-900 font-semibold bg-slate-50 p-6 rounded-xl border border-slate-200">${qData.q}</div>
+                <div class="space-y-2 pt-2 font-mono text-xs">
+            `;
+
+            qData.options.forEach((opt) => {
+                const safeOpt = opt.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                html += `
+                    <label class="flex items-center gap-3 p-4 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                        <input type="radio" name="quiz-opt" value="${safeOpt}" class="w-4 h-4 accent-indigo-600">
+                        <span class="text-slate-800 font-medium">${opt}</span>
+                    </label>
+                `;
+            });
+
+            html += `</div>`;
+            box.innerHTML = html;
+        }
+
+        function nextQuizQuestion() {
+            const selectedOpt = document.querySelector('input[name="quiz-opt"]:checked');
+            if (!selectedOpt) return;
+
+            const val = selectedOpt.value;
+            const qData = state.quizQuestions[state.quizCurrentIdx];
+
+            if (val === qData.answer) {
+                state.quizScore++;
+                state.xp += 15;
+                playSound('correct');
+            } else {
+                playSound('wrong');
+            }
+
+            document.getElementById('total-xp-display').innerText = state.xp;
+
+            if (state.quizCurrentIdx < state.quizQuestions.length - 1) {
+                state.quizCurrentIdx++;
+                renderQuizQuestion();
+            } else {
+                showQuizResults();
+            }
+        }
+
+        function showQuizResults() {
+            document.getElementById('quiz-active').classList.add('hidden');
+            document.getElementById('quiz-results').classList.remove('hidden');
+
+            const total = state.quizQuestions.length;
+            const score = state.quizScore;
+            const pct = Math.round((score / total) * 100);
+
+            document.getElementById('results-score').innerText = `${score} / ${total}`;
+            document.getElementById('results-percent').innerText = `(${pct}% Accuracy)`;
+
+            if (pct >= 80) playSound('complete');
+        }
+
+        window.onload = function() {
+            switchTab('lessons');
+        };
+    </script>
+</body>
+</html>

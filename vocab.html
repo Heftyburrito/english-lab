@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="sv" class="h-full bg-[#f6f7fb]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabulary Lab - English Learning</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Syne, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Syne', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#4f46e5',
+              600: '#4338ca',
+              700: '#3730a3',
+            },
+            dark: '#0c0f1d',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom 3D Card Flip Styling */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    
+    /* Smooth transitions */
+    .flip-card-inner {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-800 font-sans antialiased flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo (Cleaned header without Åk 7-9 badge) -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center font-display font-extrabold text-xl shadow-md shadow-brand-500/20">
+          VL
+        </div>
+        <div class="leading-none">
+          <div class="font-display font-extrabold text-xl sm:text-2xl text-dark tracking-wider uppercase">
+            VOCABULARY<span class="text-brand-500"> LAB</span>
+          </div>
+          <div class="text-[10px] font-mono text-slate-400 tracking-widest uppercase mt-0.5">
+            ENGLISH VOCABULARY PRACTICE
+          </div>
+        </div>
+      </div>
+
+      <!-- Center Nav Modes -->
+      <nav class="hidden lg:flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 text-xs font-mono font-bold tracking-wider">
+        <button onclick="switchMode('flashcards')" id="nav-flashcards" class="nav-btn px-4 py-2 rounded-xl transition-all duration-200 bg-white text-brand-500 shadow-sm">
+          FLIP CARDS
+        </button>
+        <button onclick="switchMode('translate')" id="nav-translate" class="nav-btn px-4 py-2 rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900">
+          TRANSLATION
+        </button>
+        <button onclick="switchMode('sentences')" id="nav-sentences" class="nav-btn px-4 py-2 rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900">
+          SENTENCE LAB
+        </button>
+        <button onclick="switchMode('spelling')" id="nav-spelling" class="nav-btn px-4 py-2 rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900">
+          SPELLING & DEF
+        </button>
+      </nav>
+
+      <!-- Right Header Tools (Sound, Easy/Medium/Hard Level Selector & XP Counter) -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Audio Toggle Button -->
+        <button onclick="toggleSound()" id="sound-toggle-btn" class="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 font-mono text-xs font-bold bg-slate-50 hover:bg-slate-100 text-slate-700 transition">
+          <i data-lucide="volume-2" class="w-4 h-4 text-emerald-600" id="sound-icon"></i>
+          <span class="hidden sm:inline">SOUND:</span>
+          <span id="sound-status-text" class="text-emerald-600">ON</span>
+        </button>
+
+        <!-- Level Selector Dropdown: Easy, Medium, Hard -->
+        <div class="relative">
+          <select id="level-select" onchange="changeLevel(this.value)" class="appearance-none bg-slate-50 hover:bg-slate-100 border border-slate-200 text-brand-700 font-mono text-xs font-bold px-3 py-2 pr-8 rounded-xl cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase">
+            <option value="ALL">ALL LEVELS</option>
+            <option value="Easy" selected>EASY</option>
+            <option value="Medium">MEDIUM</option>
+            <option value="Hard">HARD</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-brand-600 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+        </div>
+
+        <!-- XP Badge -->
+        <div class="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand-50 border border-brand-100 text-brand-600 font-mono text-xs font-bold">
+          <i data-lucide="zap" class="w-4 h-4 text-amber-500 fill-amber-500"></i>
+          <span>XP <span id="xp-counter" class="text-slate-900 font-extrabold">0</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Mobile Sub-navigation -->
+    <div class="lg:hidden flex items-center justify-around bg-slate-50 border-t border-slate-200 p-2 text-xs font-mono font-bold overflow-x-auto">
+      <button onclick="switchMode('flashcards')" id="mobile-nav-flashcards" class="mobile-nav-btn px-3 py-1.5 rounded-lg bg-brand-500 text-white">FLIP CARDS</button>
+      <button onclick="switchMode('translate')" id="mobile-nav-translate" class="mobile-nav-btn px-3 py-1.5 rounded-lg text-slate-600">TRANSLATE</button>
+      <button onclick="switchMode('sentences')" id="mobile-nav-sentences" class="mobile-nav-btn px-3 py-1.5 rounded-lg text-slate-600">SENTENCES</button>
+      <button onclick="switchMode('spelling')" id="mobile-nav-spelling" class="mobile-nav-btn px-3 py-1.5 rounded-lg text-slate-600">SPELLING</button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 sm:py-10 flex flex-col justify-between">
+
+    <!-- Top Banner & Title Section -->
+    <div class="text-center mb-8">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-600 text-xs font-mono font-bold uppercase tracking-wider mb-3">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+        <span id="active-level-label">VOCABULARY PRACTICE (EASY TO HARD)</span>
+      </div>
+
+      <!-- Main Section Header -->
+      <h1 id="mode-main-title" class="text-3xl sm:text-5xl font-display font-extrabold text-dark tracking-wide uppercase mb-3">
+        ESSENTIAL WORD STUDIO
+      </h1>
+
+      <!-- Description -->
+      <p id="mode-description" class="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
+        Träna på centrala engelska ord. Vänd på korten för att lära dig uttal, betydelse, exempelmeningar och svenska översättningar.
+      </p>
+
+      <!-- Sub Mode Switches -->
+      <div class="flex items-center justify-center gap-2 mt-6">
+        <button id="subtab-1" onclick="switchMode('flashcards')" class="px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-500/20">
+          Interactive Flashcards
+        </button>
+        <button id="subtab-2" onclick="switchMode('translate')" class="px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-white text-slate-600 border-slate-200 hover:bg-slate-50">
+          Translation Quiz
+        </button>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODE 1: INTERACTIVE FLASHCARDS (FLIP THE CARD) -->
+    <!-- ================================================================= -->
+    <div id="section-flashcards" class="mode-section">
+      <div class="max-w-2xl mx-auto">
+        <!-- 3D Card Container -->
+        <div class="perspective-1000 w-full h-[320px] sm:h-[360px] cursor-pointer group" onclick="flipCard()">
+          <div id="flashcard-inner" class="flip-card-inner relative w-full h-full transform-style-3d shadow-xl rounded-3xl bg-white border border-slate-200/80">
+            
+            <!-- FRONT OF CARD -->
+            <div class="absolute inset-0 w-full h-full backface-hidden rounded-3xl p-6 sm:p-10 flex flex-col justify-between items-center text-center bg-white">
+              <!-- Top Card Bar -->
+              <div class="w-full flex justify-between items-center text-xs font-mono text-slate-400 font-bold uppercase tracking-widest">
+                <span id="fc-progress">WORD 1 / 100</span>
+                <span id="fc-level-tag" class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-bold">
+                  EASY
+                </span>
+              </div>
+
+              <!-- Center Word -->
+              <div class="my-auto">
+                <div class="flex items-center justify-center gap-3">
+                  <h2 id="fc-word-en" class="text-4xl sm:text-6xl font-display font-extrabold text-dark tracking-tight">
+                    Describe
+                  </h2>
+                  <button onclick="event.stopPropagation(); speakWord()" class="p-2.5 rounded-full bg-brand-50 text-brand-600 hover:bg-brand-100 transition" title="Lyssna på uttal">
+                    <i data-lucide="volume-2" class="w-6 h-6"></i>
+                  </button>
+                </div>
+                <div class="mt-2 text-slate-500 font-mono text-sm sm:text-base">
+                  <span id="fc-pos" class="italic">verb</span> • <span id="fc-phonetic" class="text-slate-400">/dɪˈskraɪb/</span>
+                </div>
+              </div>
+
+              <!-- Bottom Helper -->
+              <div class="text-xs font-mono text-slate-400 font-semibold uppercase tracking-widest flex items-center gap-2">
+                <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                [ KLICKA FÖR ATT VÄNDA KORTET ]
+              </div>
+            </div>
+
+            <!-- BACK OF CARD -->
+            <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl p-6 sm:p-10 flex flex-col justify-between bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-2xl">
+              <!-- Top Card Bar -->
+              <div class="w-full flex justify-between items-center text-xs font-mono text-slate-400 font-bold uppercase tracking-widest">
+                <span>SVENSK ÖVERSÄTTNING</span>
+                <span id="fc-back-pos" class="text-brand-300 font-semibold">VERB</span>
+              </div>
+
+              <!-- Swedish Translation & Context -->
+              <div class="my-auto text-center space-y-3">
+                <div class="text-xs font-mono text-brand-300 uppercase tracking-widest">Betydelse:</div>
+                <h3 id="fc-word-sv" class="text-3xl sm:text-5xl font-display font-bold text-white tracking-wide">
+                  Beskriva
+                </h3>
+                
+                <div class="pt-2 border-t border-slate-700/60 max-w-md mx-auto">
+                  <p id="fc-definition" class="text-slate-300 text-xs sm:text-sm font-sans leading-relaxed">
+                    Ge en bild av något med ord.
+                  </p>
+                  <p id="fc-example" class="mt-2 text-brand-200 text-xs sm:text-sm italic font-serif">
+                    "Can you describe your best friend?"
+                  </p>
+                </div>
+              </div>
+
+              <!-- Bottom Indicator -->
+              <div class="text-center text-[11px] font-mono text-slate-400 uppercase tracking-wider">
+                Klicka för att vända tillbaka
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Card Controls (Previous / Next / Klar) -->
+        <div class="flex items-center justify-between gap-4 mt-8">
+          <button onclick="prevCard()" class="flex-1 py-3.5 px-6 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-mono text-xs font-bold tracking-wider uppercase transition shadow-sm flex items-center justify-center gap-2">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            FÖREGÅENDE ORD
+          </button>
+
+          <!-- Changed "KUNNAT" to "KLAR" as requested -->
+          <button onclick="markLearned()" class="p-3.5 px-5 rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition font-mono text-xs font-bold flex items-center justify-center gap-1.5" title="Markera som klar">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600"></i>
+            <span>KLAR</span>
+          </button>
+
+          <button onclick="nextCard()" class="flex-1 py-3.5 px-6 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-bold tracking-wider uppercase transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
+            NÄSTA ORD
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODE 2: TRANSLATE TO SWEDISH (ÖVERSÄTT TILL SVENSKA) -->
+    <!-- ================================================================= -->
+    <div id="section-translate" class="mode-section hidden">
+      <div class="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xl">
+        
+        <!-- Header status -->
+        <div class="flex justify-between items-center text-xs font-mono text-slate-400 font-bold uppercase tracking-widest mb-6">
+          <span>ÖVERSÄTT TILL SVENSKA</span>
+          <span id="trans-level-badge" class="px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 font-bold border border-brand-100 uppercase">EASY</span>
+        </div>
+
+        <!-- Prompt Word -->
+        <div class="text-center mb-8">
+          <div class="text-xs font-mono text-slate-400 uppercase tracking-widest mb-1">Vad betyder det engelska ordet?</div>
+          <div class="flex items-center justify-center gap-3">
+            <h2 id="trans-target-word" class="text-4xl sm:text-5xl font-display font-extrabold text-dark tracking-tight">
+              Improve
+            </h2>
+            <button onclick="speakText(document.getElementById('trans-target-word').innerText)" class="p-2 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 transition">
+              <i data-lucide="volume-2" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <p id="trans-sentence-hint" class="mt-3 text-slate-500 text-sm italic bg-slate-50 p-3 rounded-xl border border-slate-100">
+            "I want to improve my English vocabulary."
+          </p>
+        </div>
+
+        <!-- Multiple Choice Options -->
+        <div id="trans-options-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+        </div>
+
+        <!-- Feedback Box -->
+        <div id="trans-feedback" class="hidden p-4 rounded-2xl text-center font-mono text-sm font-bold mb-4"></div>
+
+        <!-- Action Next Button -->
+        <div class="flex justify-end">
+          <button id="trans-next-btn" onclick="nextTranslateQuestion()" class="w-full py-3.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-bold tracking-wider uppercase transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
+            NÄSTA FRÅGA
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODE 3: SENTENCE BUILDER (SÄTT I EN MENING) -->
+    <!-- ================================================================= -->
+    <div id="section-sentences" class="mode-section hidden">
+      <div class="max-w-2xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xl">
+        
+        <div class="flex justify-between items-center text-xs font-mono text-slate-400 font-bold uppercase tracking-widest mb-6">
+          <span>SENTENCE WRITER LAB</span>
+          <span id="sent-level-badge" class="px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 font-bold border border-brand-100 uppercase">MEDIUM</span>
+        </div>
+
+        <div class="mb-6">
+          <div class="text-xs font-mono text-slate-400 uppercase tracking-widest mb-1">Skriv en engelsk mening som innehåller ordet:</div>
+          <div class="flex items-center gap-3">
+            <span id="sent-target-word" class="text-3xl font-display font-extrabold text-brand-600 bg-brand-50 px-4 py-1.5 rounded-2xl border border-brand-100">
+              Opportunity
+            </span>
+            <span id="sent-target-pos" class="font-mono text-xs text-slate-500 italic">(noun = möjlighet)</span>
+          </div>
+        </div>
+
+        <!-- Sentence Input -->
+        <div class="space-y-3 mb-6">
+          <label for="sentence-input" class="block text-xs font-mono font-bold uppercase text-slate-600">
+            Din mening på engelska:
+          </label>
+          <textarea id="sentence-input" rows="3" placeholder="t.ex. This trip is a great opportunity to learn new things..." class="w-full p-4 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 font-sans text-sm sm:text-base text-slate-800 placeholder-slate-400 resize-none"></textarea>
+        </div>
+
+        <!-- Feedback / Evaluation Box -->
+        <div id="sentence-feedback" class="hidden mb-6 p-4 rounded-2xl border text-sm font-sans">
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="checkSentence()" class="px-6 py-3.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-bold tracking-wider uppercase transition shadow-md shadow-brand-500/20 flex items-center gap-2">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            KONTROLLERA MENING
+          </button>
+
+          <button onclick="nextSentenceQuestion()" class="px-5 py-3.5 rounded-2xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-mono text-xs font-bold tracking-wider uppercase transition flex items-center gap-2">
+            SLUMPA NYTT ORD
+            <i data-lucide="shuffle" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- MODE 4: SPELLING & DEFINITION (STAVNING & DEFINITIONER) -->
+    <!-- ================================================================= -->
+    <div id="section-spelling" class="mode-section hidden">
+      <div class="max-w-xl mx-auto bg-white border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-xl">
+        
+        <div class="flex justify-between items-center text-xs font-mono text-slate-400 font-bold uppercase tracking-widest mb-6">
+          <span>SPELLING & DEFINITION LAB</span>
+          <span id="spell-level-badge" class="px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 font-bold border border-brand-100 uppercase">HARD</span>
+        </div>
+
+        <div class="text-center mb-6">
+          <div class="text-xs font-mono text-slate-400 uppercase tracking-widest mb-2">Läs definitionen och stava ordet rätt:</div>
+          <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-slate-700 font-sans text-base leading-relaxed mb-3">
+            "<span id="spell-definition-text">To give someone permission to do something.</span>"
+          </div>
+          <div class="text-xs font-mono text-slate-500">
+            Svensk ledtråd: <span id="spell-hint-sv" class="font-bold text-slate-700">Tillåta</span> • Antal bokstäver: <span id="spell-length-hint" class="font-bold text-brand-600">5</span>
+          </div>
+        </div>
+
+        <!-- Input Box -->
+        <div class="mb-6 space-y-2">
+          <div class="flex gap-2">
+            <input type="text" id="spelling-input" autocomplete="off" placeholder="Skriv ordet på engelska..." onkeydown="if(event.key==='Enter') checkSpelling()" class="flex-1 p-4 text-center font-mono font-bold text-lg rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500 uppercase tracking-widest text-slate-800">
+            <button onclick="speakWord(spellingCurrentWord ? spellingCurrentWord.en : '')" class="px-4 rounded-2xl bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 transition flex items-center justify-center" title="Lyssna på uttal">
+              <i data-lucide="volume-2" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Feedback Box -->
+        <div id="spelling-feedback" class="hidden mb-6 p-4 rounded-2xl text-center font-mono text-sm font-bold"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-between gap-3">
+          <button onclick="checkSpelling()" class="flex-1 py-3.5 rounded-2xl bg-brand-500 hover:bg-brand-600 text-white font-mono text-xs font-bold tracking-wider uppercase transition shadow-md shadow-brand-500/20 flex items-center justify-center gap-2">
+            RÄTTA STAVNING
+          </button>
+          <button onclick="nextSpellingQuestion()" class="py-3.5 px-5 rounded-2xl border border-slate-200 hover:bg-slate-50 text-slate-700 font-mono text-xs font-bold tracking-wider uppercase transition flex items-center justify-center gap-2">
+            NÄSTA ORD
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Bottom Footer Info -->
+    <footer class="mt-12 text-center text-xs font-mono text-slate-400">
+      VOCABULARY LAB • EASY • MEDIUM • HARD
+    </footer>
+
+  </main>
+
+  <script>
+    /* =================================================================
+       VOCABULARY DATABASE (300 Words: 100 Easy, 100 Medium, 100 Hard)
+       ================================================================= */
+    const VOCABULARY_DATA = [
+      // --- EASY LEVEL (100 words) ---
+      { id: 1, en: "Describe", sv: "Beskriva", pos: "verb", level: "Easy", phonetic: "/dɪˈskraɪb/", def: "Ge en bild av något med ord.", example: "Can you describe your best friend?" },
+      { id: 2, en: "Improve", sv: "Förbättra", pos: "verb", level: "Easy", phonetic: "/ɪmˈpruːv/", def: "Göra något bättre än tidigare.", example: "I want to improve my English vocabulary." },
+      { id: 3, en: "Protect", sv: "Skydda", pos: "verb", level: "Easy", phonetic: "/prəˈtekt/", def: "Hålla någon eller något säker från fara.", example: "Warm clothes protect you against cold weather." },
+      { id: 4, en: "Opinion", sv: "Åsikt", pos: "noun", level: "Easy", phonetic: "/əˈpɪn.jən/", def: "Vad du tycker eller tror om någonting.", example: "In my opinion, football is exciting." },
+      { id: 5, en: "Compare", sv: "Jämföra", pos: "verb", level: "Easy", phonetic: "/kəmˈpeər/", def: "Mäta skillnader och likheter mellan två saker.", example: "Compare your answers with a partner." },
+      { id: 6, en: "Discover", sv: "Upptäcka", pos: "verb", level: "Easy", phonetic: "/dɪˈskʌv.ər/", def: "Hitta någonting för första gången.", example: "Scientists discovered a new planet." },
+      { id: 7, en: "Decide", sv: "Bestämma", pos: "verb", level: "Easy", phonetic: "/dɪˈsaɪd/", def: "Välja ett alternativ efter att ha tänkt efter.", example: "I cannot decide which shoes to buy." },
+      { id: 8, en: "Create", sv: "Skapa", pos: "verb", level: "Easy", phonetic: "/kriˈeɪt/", def: "Göra så att någonting nytt finns till.", example: "Artists create beautiful paintings." },
+      { id: 9, en: "Agree", sv: "Hålla med", pos: "verb", level: "Easy", phonetic: "/əˈɡriː/", def: "Ha samma åsikt som någon annan.", example: "I agree with your idea completely." },
+      { id: 10, en: "Choose", sv: "Välja", pos: "verb", level: "Easy", phonetic: "/tʃuːz/", def: "Plocka ut det bästa alternativet.", example: "Choose your favorite color from the list." },
+      { id: 11, en: "Prepare", sv: "Förbereda", pos: "verb", level: "Easy", phonetic: "/prɪˈpeər/", def: "Göra sig redo inför någonting.", example: "We need to prepare for the English test." },
+      { id: 12, en: "Travel", sv: "Resa", pos: "verb", level: "Easy", phonetic: "/ˈtræv.əl/", def: "Åka från en plats till en annan.", example: "They love to travel around the world." },
+      { id: 13, en: "Experience", sv: "Erfarenhet", pos: "noun", level: "Easy", phonetic: "/ɪkˈspɪə.ri.əns/", def: "Något du har varit med om eller lärt dig.", example: "Working in a restaurant was a great experience." },
+      { id: 14, en: "Notice", sv: "Märka", pos: "verb", level: "Easy", phonetic: "/ˈnəʊ.tɪs/", def: "Se eller uppfatta någonting.", example: "Did you notice her new haircut?" },
+      { id: 15, en: "Remember", sv: "Minnas", pos: "verb", level: "Easy", phonetic: "/rɪˈmem.bər/", def: "Komma ihåg information i hjärnan.", example: "Always remember to lock the door." },
+      { id: 16, en: "Forget", sv: "Glömma", pos: "verb", level: "Easy", phonetic: "/fəˈɡet/", def: "Inte komma ihåg någonting.", example: "Don't forget your homework on Monday." },
+      { id: 17, en: "Share", sv: "Dela", pos: "verb", level: "Easy", phonetic: "/ʃeər/", def: "Låta andra använda någonting som du har.", example: "It is good to share your lunch with a friend." },
+      { id: 18, en: "Support", sv: "Stötta", pos: "verb", level: "Easy", phonetic: "/səˈpɔːt/", def: "Hjälpa och uppmuntra någon.", example: "Good friends support each other." },
+      { id: 19, en: "Follow", sv: "Följa", pos: "verb", level: "Easy", phonetic: "/ˈfɒl.əʊ/", def: "Gå bakom någon eller följa regler.", example: "Please follow the instructions carefully." },
+      { id: 20, en: "Explain", sv: "Förklara", pos: "verb", level: "Easy", phonetic: "/ɪkˈspleɪn/", def: "Göra någonting enkelt att förstå.", example: "The teacher explained the task to us." },
+      { id: 21, en: "Believe", sv: "Tro på", pos: "verb", level: "Easy", phonetic: "/bɪˈliːv/", def: "Tänka att någonting är sant.", example: "I believe that you can do it!" },
+      { id: 22, en: "Connect", sv: "Koppla ihop", pos: "verb", level: "Easy", phonetic: "/kəˈnekt/", def: "Länka samman två saker.", example: "Connect your laptop to the Wi-Fi." },
+      { id: 23, en: "Introduce", sv: "Presentera", pos: "verb", level: "Easy", phonetic: "/ˌɪn.trəˈdjuːs/", def: "Säga vad någon heter för en ny grupp.", example: "Let me introduce my brother to you." },
+      { id: 24, en: "Continue", sv: "Fortsätta", pos: "verb", level: "Easy", phonetic: "/kənˈtɪn.juː/", def: "Hålla på med något utan att sluta.", example: "We will continue reading after lunch." },
+      { id: 25, en: "Imagine", sv: "Föreställa sig", pos: "verb", level: "Easy", phonetic: "/ɪˈmædʒ.ɪn/", def: "Skapa en bild i huvudet.", example: "Imagine living on a tropical island." },
+      { id: 26, en: "Offer", sv: "Erbjuda", pos: "verb", level: "Easy", phonetic: "/ˈɒf.ər/", def: "Fråga om någon vill ha något.", example: "He offered me a cup of tea." },
+      { id: 27, en: "Receive", sv: "Ta emot", pos: "verb", level: "Easy", phonetic: "/rɪˈsiːv/", def: "Få någonting från någon annan.", example: "Did you receive my email message?" },
+      { id: 28, en: "Refuse", sv: "Vägra", pos: "verb", level: "Easy", phonetic: "/rɪˈfjuːz/", def: "Säga nej till någonting.", example: "The cat refused to go outside in the rain." },
+      { id: 29, en: "Suggest", sv: "Föreslå", pos: "verb", level: "Easy", phonetic: "/səˈdʒest/", def: "Ge en idé eller ett förslag.", example: "I suggest we take a short break now." },
+      { id: 30, en: "Avoid", sv: "Undvika", pos: "verb", level: "Easy", phonetic: "/əˈvɔɪd/", def: "Hålla sig borta från något farligt eller jobbigt.", example: "Try to avoid making big mistakes." },
+      { id: 31, en: "Borrow", sv: "Låna (av någon)", pos: "verb", level: "Easy", phonetic: "/ˈbɒr.əʊ/", def: "Ta någonting tillfälligt och lämna tillbaka.", example: "Can I borrow a pencil please?" },
+      { id: 32, en: "Lend", sv: "Låna ut", pos: "verb", level: "Easy", phonetic: "/lend/", def: "Ge någonting tillfälligt till någon annan.", example: "She lent me her winter coat." },
+      { id: 33, en: "Prefer", sv: "Föredra", pos: "verb", level: "Easy", phonetic: "/prɪˈfɜːr/", def: "Tycka bättre om en sak än en annan.", example: "Do you prefer tea or coffee?" },
+      { id: 34, en: "Provide", sv: "Förse", pos: "verb", level: "Easy", phonetic: "/prəˈvaɪd/", def: "Ge någon det de behöver.", example: "Schools provide books for all pupils." },
+      { id: 35, en: "Promise", sv: "Lova", pos: "verb", level: "Easy", phonetic: "/ˈprɒm.ɪs/", def: "Säga säkert att man ska göra någonting.", example: "I promise to help you tomorrow." },
+      { id: 36, en: "Accept", sv: "Acceptera", pos: "verb", level: "Easy", phonetic: "/əkˈsept/", def: "Säga ja till ett erbjudande eller en inbjudan.", example: "She accepted the invitation to the party." },
+      { id: 37, en: "Advice", sv: "Råd", pos: "noun", level: "Easy", phonetic: "/ədˈvaɪs/", def: "Ett bra tips från någon med erfarenhet.", example: "My grandfather gave me good advice." },
+      { id: 38, en: "Always", sv: "Alltid", pos: "adverb", level: "Easy", phonetic: "/ˈɔːl.weɪz/", def: "Vid alla tillfällen, utan undantag.", example: "You should always tell the truth." },
+      { id: 39, en: "Answer", sv: "Svar", pos: "noun", level: "Easy", phonetic: "/ˈɑːn.sər/", def: "Lösningen på en fråga.", example: "Write your answer on the paper." },
+      { id: 40, en: "Appear", sv: "Dyka upp", pos: "verb", level: "Easy", phonetic: "/əˈpɪər/", def: "Bli synlig helt plötsligt.", example: "A rainbow appeared after the rain." },
+      { id: 41, en: "Arrive", sv: "Anlända", pos: "verb", level: "Easy", phonetic: "/əˈraɪv/", def: "Nå fram till slutdestinationen.", example: "The train will arrive in five minutes." },
+      { id: 42, en: "Attack", sv: "Anfalla", pos: "verb", level: "Easy", phonetic: "/əˈtæk/", def: "Försöka skada någon eller något.", example: "The guard dog will attack intruders." },
+      { id: 43, en: "Beautiful", sv: "Vacker", pos: "adjective", level: "Easy", phonetic: "/ˈbjuː.tɪ.fəl/", def: "Mycket fin att titta på.", example: "Look at that beautiful flower in the garden." },
+      { id: 44, en: "Become", sv: "Bli", pos: "verb", level: "Easy", phonetic: "/bɪˈkʌm/", def: "Börja vara någonting nytt.", example: "He wants to become a pilot when he grows up." },
+      { id: 45, en: "Belong", sv: "Tillhöra", pos: "verb", level: "Easy", phonetic: "/bɪˈlɒŋ/", def: "Vara ägd av någon.", example: "This jacket belongs to my brother." },
+      { id: 46, en: "Between", sv: "Mellan", pos: "preposition", level: "Easy", phonetic: "/bɪˈtwiːn/", def: "Mitt i utrymmet av två saker.", example: "Sit between Sarah and Marcus." },
+      { id: 47, en: "Build", sv: "Bygga", pos: "verb", level: "Easy", phonetic: "/bɪld/", def: "Konstruera någonting nytt.", example: "They plan to build a new bridge." },
+      { id: 48, en: "Business", sv: "Företag", pos: "noun", level: "Easy", phonetic: "/ˈbɪz.nɪs/", def: "Ett bolag som säljer varor eller tjänster.", example: "Her parents run a small family business." },
+      { id: 49, en: "Calm", sv: "Lugn", pos: "adjective", level: "Easy", phonetic: "/kɑːm/", def: "Stilla och utan stress.", example: "Stay calm during the exam." },
+      { id: 50, en: "Careful", sv: "Försiktig", pos: "adjective", level: "Easy", phonetic: "/ˈkeə.fəl/", def: "Se upp så att man inte gör fel eller skadas.", example: "Be careful with that heavy box." },
+      { id: 51, en: "Carry", sv: "Bära", pos: "verb", level: "Easy", phonetic: "/ˈkær.i/", def: "Hålla och flytta någonting i händerna.", example: "Can you help me carry these groceries?" },
+      { id: 52, en: "Catch", sv: "Fånga", pos: "verb", level: "Easy", phonetic: "/kætʃ/", def: "Ta tag i något som flyger i luften.", example: "Try to catch the ball with both hands." },
+      { id: 53, en: "Cause", sv: "Orsaka", pos: "verb", level: "Easy", phonetic: "/kɔːz/", def: "Få någonting att inträffa.", example: "Heavy rain can cause flooding." },
+      { id: 54, en: "Chance", sv: "Chans", pos: "noun", level: "Easy", phonetic: "/tʃɑːns/", def: "En möjlighet eller tillfälle.", example: "This is your last chance to score a goal." },
+      { id: 55, en: "Change", sv: "Ändra", pos: "verb", level: "Easy", phonetic: "/tʃeɪndʒ/", def: "Göra annorlunda än tidigare.", example: "You can change your settings anytime." },
+      { id: 56, en: "Clean", sv: "Ren", pos: "adjective", level: "Easy", phonetic: "/kliːn/", def: "Utan smuts eller damm.", example: "Put on clean clothes in the morning." },
+      { id: 57, en: "Clear", sv: "Tydlig", pos: "adjective", level: "Easy", phonetic: "/klɪər/", def: "Lätt att förstå eller se.", example: "The teacher gave clear instructions." },
+      { id: 58, en: "Clever", sv: "Klok", pos: "adjective", level: "Easy", phonetic: "/ˈklev.ər/", def: "Smart och snabbtänkt.", example: "She came up with a clever solution." },
+      { id: 59, en: "Clothes", sv: "Kläder", pos: "noun", level: "Easy", phonetic: "/kləʊðz/", def: "Plagg man bär på kroppen.", example: "Wear warm clothes in winter." },
+      { id: 60, en: "Collect", sv: "Samla", pos: "verb", level: "Easy", phonetic: "/kəˈlekt/", def: "Plocka ihop saker av samma slag.", example: "I collect old stamps and coins." },
+      { id: 61, en: "Common", sv: "Vanlig", pos: "adjective", level: "Easy", phonetic: "/ˈkɒm.ən/", def: "Något man ser eller hör ofta.", example: "Colds are common during autumn." },
+      { id: 62, en: "Complete", sv: "Slutföra", pos: "verb", level: "Easy", phonetic: "/kəmˈpliːt/", def: "Göra färdigt ända till slutet.", example: "Please complete page 12 in the workbook." },
+      { id: 63, en: "Crowd", sv: "Folksamling", pos: "noun", level: "Easy", phonetic: "/kraʊd/", def: "Många människor samlade på ett ställe.", example: "There was a huge crowd at the concert." },
+      { id: 64, en: "Danger", sv: "Fara", pos: "noun", level: "Easy", phonetic: "/ˈdeɪn.dʒər/", def: "Något som kan orsaka skada.", example: "The sign warns people about danger." },
+      { id: 65, en: "Delicious", sv: "Läckerv", pos: "adjective", level: "Easy", phonetic: "/dɪˈlɪʃ.əs/", def: "Smakar eller luktar väldigt gott.", example: "This pasta dish is delicious!" },
+      { id: 66, en: "Difference", sv: "Skillnad", pos: "noun", level: "Easy", phonetic: "/ˈdɪf.ər.əns/", def: "Det som gör två saker olika.", example: "What is the difference between these options?" },
+      { id: 67, en: "Different", sv: "Olika", pos: "adjective", level: "Easy", phonetic: "/ˈdɪf.ər.ənt/", def: "Inte likadana.", example: "They have different opinions about music." },
+      { id: 68, en: "Difficult", sv: "Svår", pos: "adjective", level: "Easy", phonetic: "/ˈdɪf.ɪ.kəlt/", def: "Inte lätt, kräver ansträngning.", example: "Math can be difficult sometimes." },
+      { id: 69, en: "Discuss", sv: "Diskutera", pos: "verb", level: "Easy", phonetic: "/dɪˈskʌs/", def: "Prata om ett ämne tillsammans.", example: "Let's discuss the project topic." },
+      { id: 70, en: "Early", sv: "Tidig", pos: "adjective", level: "Easy", phonetic: "/ˈɜː.li/", def: "Före den vanliga tiden.", example: "I woke up early this morning." },
+      { id: 71, en: "Enjoy", sv: "Njuta av", pos: "verb", level: "Easy", phonetic: "/ɪnˈdʒɔɪ/", def: "Ha roligt när man gör något.", example: "I really enjoy reading fantasy books." },
+      { id: 72, en: "Expect", sv: "Förvänta sig", pos: "verb", level: "Easy", phonetic: "/ɪkˈspekt/", def: "Tro att någonting ska hända.", example: "We expect sunny weather tomorrow." },
+      { id: 73, en: "Famous", sv: "Känd", pos: "adjective", level: "Easy", phonetic: "/ˈfeɪ.məs/", def: "Känd av väldigt många människor.", example: "She is a famous pop singer." },
+      { id: 74, en: "Favourite", sv: "Favorit", pos: "adjective", level: "Easy", phonetic: "/ˈfeɪ.vər.ɪt/", def: "Den sak man gillar allra mest.", example: "Pizza is my favourite food." },
+      { id: 75, en: "Feeling", sv: "Känsla", pos: "noun", level: "Easy", phonetic: "/ˈfiː.lɪŋ/", def: "En känslomässig upplevelse som glädje.", example: "I have a good feeling about this game." },
+      { id: 76, en: "Finish", sv: "Avsluta", pos: "verb", level: "Easy", phonetic: "/ˈfɪn.ɪʃ/", def: "Nå slutet av en uppgift.", example: "Finish your dinner before playing." },
+      { id: 77, en: "Flight", sv: "Flygresa", pos: "noun", level: "Easy", phonetic: "/flaɪt/", def: "En resa med flygplan.", example: "Our flight lands in London at noon." },
+      { id: 78, en: "Foreign", sv: "Utländsk", pos: "adjective", level: "Easy", phonetic: "/ˈfɒr.ən/", def: "Från ett annat land.", example: "Learning a foreign language takes time." },
+      { id: 79, en: "Friendly", sv: "Vänlig", pos: "adjective", level: "Easy", phonetic: "/ˈfrend.li/", def: "Snäll och trevlig mot andra.", example: "The new classmate is very friendly." },
+      { id: 80, en: "Future", sv: "Framtid", pos: "noun", level: "Easy", phonetic: "/ˈfjuː.tʃər/", def: "Tiden som kommer längre fram.", example: "What are your plans for the future?" },
+      { id: 81, en: "Gentle", sv: "Mild", pos: "adjective", level: "Easy", phonetic: "/ˈdʒen.təl/", def: "Mjuk och försiktig.", example: "Be gentle with the puppy." },
+      { id: 82, en: "Group", sv: "Grupp", pos: "noun", level: "Easy", phonetic: "/ɡruːp/", def: "Flera personer eller saker tillsammans.", example: "Work in a group of three pupils." },
+      { id: 83, en: "Grow", sv: "Växa", pos: "verb", level: "Easy", phonetic: "/ɡrəʊ/", def: "Bli större eller utvecklas.", example: "Plants grow quickly in the spring." },
+      { id: 84, en: "Happen", sv: "Hända", pos: "verb", level: "Easy", phonetic: "/ˈhæp.ən/", def: "Inträffa utan förvarning.", example: "Accidents can happen anytime." },
+      { id: 85, en: "Healthy", sv: "Hälsosam", pos: "adjective", level: "Easy", phonetic: "/ˈhel.θi/", def: "Bra för kroppen och måendet.", example: "Eating fruit is healthy." },
+      { id: 86, en: "Heavy", sv: "Tung", pos: "adjective", level: "Easy", phonetic: "/ˈhev.i/", def: "Väger mycket.", example: "This suitcase is too heavy to carry." },
+      { id: 87, en: "Helpful", sv: "Hjälpsam", pos: "adjective", level: "Easy", phonetic: "/ˈhelp.fəl/", def: "Gärna vill hjälpa till.", example: "The librarian was very helpful." },
+      { id: 88, en: "Honest", sv: "Ärlig", pos: "adjective", level: "Easy", phonetic: "/ˈɒn.ɪst/", def: "Talar alltid sanning.", example: "An honest friend is worth gold." },
+      { id: 89, en: "Hope", sv: "Hoppas", pos: "verb", level: "Easy", phonetic: "/həʊp/", def: "Önska starkt att något ska gå bra.", example: "I hope you pass the test." },
+      { id: 90, en: "Important", sv: "Viktig", pos: "adjective", level: "Easy", phonetic: "/ɪmˈpɔː.tənt/", def: "Betyder mycket och har stort värde.", example: "Sleep is important for learning." },
+      { id: 91, en: "Island", sv: "Ö", pos: "noun", level: "Easy", phonetic: "/ˈaɪ.lənd/", def: "Landyta helt omgiven av vatten.", example: "Gotland is a large Swedish island." },
+      { id: 92, en: "Journey", sv: "Färd", pos: "noun", level: "Easy", phonetic: "/ˈdʒɜː.ni/", def: "En resa från en plats till en annan.", example: "It was a long train journey." },
+      { id: 93, en: "Knowledge", sv: "Kunskap", pos: "noun", level: "Easy", phonetic: "/ˈnɒl.ɪdʒ/", def: "Information man lärt sig.", example: "Reading books expands your knowledge." },
+      { id: 94, en: "Learn", sv: "Lära sig", pos: "verb", level: "Easy", phonetic: "/lɜːn/", def: "Få nya färdigheter eller kunskaper.", example: "I want to learn how to play guitar." },
+      { id: 95, en: "Listen", sv: "Lyssna", pos: "verb", level: "Easy", phonetic: "/ˈlɪs.ən/", def: "Höra noggrant på vad någon säger.", example: "Listen to the audio track carefully." },
+      { id: 96, en: "Lonely", sv: "Ensam", pos: "adjective", level: "Easy", phonetic: "/ˈləʊn.li/", def: "Känna sig utan vänner.", example: "No one should feel lonely at school." },
+      { id: 97, en: "Loud", sv: "Högljudd", pos: "adjective", level: "Easy", phonetic: "/laʊd/", def: "Mycket stark volym.", example: "The music was far too loud." },
+      { id: 98, en: "Meaning", sv: "Betydelse", pos: "noun", level: "Easy", phonetic: "/ˈmiː.nɪŋ/", def: "Vad ett ord eller en handling innebär.", example: "Look up the meaning of the word." },
+      { id: 99, en: "Message", sv: "Meddelande", pos: "noun", level: "Easy", phonetic: "/ˈmes.ɪdʒ/", def: "Kort text man skickar till någon.", example: "Send me a text message later." },
+      { id: 100, en: "Mistake", sv: "Misstag", pos: "noun", level: "Easy", phonetic: "/mɪˈsteɪk/", def: "Något man gör fel av misstag.", example: "Everyone makes a mistake sometimes." },
+
+      // --- MEDIUM LEVEL (100 words) ---
+      { id: 101, en: "Challenge", sv: "Utmaning", pos: "noun", level: "Medium", phonetic: "/ˈtʃæl.ɪndʒ/", def: "Något nytt och svårt som kräver stor ansträngning.", example: "Climbing the mountain was a big challenge." },
+      { id: 102, en: "Environment", sv: "Miljö", pos: "noun", level: "Medium", phonetic: "/ɪnˈvaɪ.rən.mənt/", def: "Natur, omgivning och världen omkring oss.", example: "We must recycle to protect the environment." },
+      { id: 103, en: "Encourage", sv: "Uppmuntra", pos: "verb", level: "Medium", phonetic: "/ɪnˈkʌr.ɪdʒ/", def: "Ge någon stöd, hopp eller mod att göra något.", example: "My teacher encouraged me to write stories." },
+      { id: 104, en: "Succeed", sv: "Lyckas", pos: "verb", level: "Medium", phonetic: "/səkˈsiːd/", def: "Nå ett mål eller få ett bra resultat.", example: "If you study regularly, you will succeed." },
+      { id: 105, en: "Invention", sv: "Uppfinning", pos: "noun", level: "Medium", phonetic: "/ɪnˈven.ʃən/", def: "En ny sak som skapats för första gången.", example: "The smartphone is a revolutionary invention." },
+      { id: 106, en: "Opportunity", sv: "Möjlighet", pos: "noun", level: "Medium", phonetic: "/ˌɒp.əˈtʃuː.nə.ti/", def: "En god chans att göra eller uppnå något.", example: "Studying abroad is a great opportunity." },
+      { id: 107, en: "Mention", sv: "Nämna", pos: "verb", level: "Medium", phonetic: "/ˈmen.ʃən/", def: "Tala om eller skriva om kortfattat.", example: "Did he mention when the movie starts?" },
+      { id: 108, en: "Develop", sv: "Utveckla", pos: "verb", level: "Medium", phonetic: "/dɪˈvel.əp/", def: "Göra någonting mer avancerat eller större.", example: "Engineers develop new green technologies." },
+      { id: 109, en: "Require", sv: "Kräva", pos: "verb", level: "Medium", phonetic: "/rɪˈkwaɪər/", def: "Behöva någonting nödvändigt.", example: "This recipe requires three fresh eggs." },
+      { id: 110, en: "Perform", sv: "Prestera / Utföra", pos: "verb", level: "Medium", phonetic: "/pəˈfɔːm/", def: "Göra en uppgift eller spela teater/musik.", example: "The actors will perform on stage tonight." },
+      { id: 111, en: "Prevent", sv: "Förhindra", pos: "verb", level: "Medium", phonetic: "/prɪˈvent/", def: "Stoppa någonting från att hända.", example: "Washing hands helps prevent diseases." },
+      { id: 112, en: "Purpose", sv: "Syfte", pos: "noun", level: "Medium", phonetic: "/ˈpɜː.pəs/", def: "Anledningen till varför man gör något.", example: "What is the main purpose of your research?" },
+      { id: 113, en: "Replace", sv: "Ersätta", pos: "verb", level: "Medium", phonetic: "/rɪˈpleɪs/", def: "Sätta en ny sak istället för den gamla.", example: "We need to replace the broken window." },
+      { id: 114, en: "Standard", sv: "Standard", pos: "noun", level: "Medium", phonetic: "/ˈstæn.dəd/", def: "En fastställd nivå av kvalitet.", example: "This hotel maintains a very high standard." },
+      { id: 115, en: "Suitable", sv: "Lämplig", pos: "adjective", level: "Medium", phonetic: "/ˈsuː.tə.bəl/", def: "Något som passar bra för ändamålet.", example: "Wear suitable clothes for hiking in the rain." },
+      { id: 116, en: "Surface", sv: "Yta", pos: "noun", level: "Medium", phonetic: "/ˈsɜː.fɪs/", def: "Det yttersta eller översta lagret av något.", example: "Oil floats on the surface of the water." },
+      { id: 117, en: "Valuable", sv: "Värdefull", pos: "adjective", level: "Medium", phonetic: "/ˈvæl.jə.bəl/", def: "Något som har stor betydelse eller är värt mycket.", example: "Time is our most valuable resource." },
+      { id: 118, en: "Benefit", sv: "Fördel", pos: "noun", level: "Medium", phonetic: "/ˈben.ɪ.fɪt/", def: "En positiv sak eller vinst som man får.", example: "Regular exercise brings many health benefits." },
+      { id: 119, en: "Century", sv: "Århundrade", pos: "noun", level: "Medium", phonetic: "/ˈsen.tʃər.i/", def: "En tidsperiod på 100 år.", example: "We live in the twenty-first century." },
+      { id: 120, en: "Consider", sv: "Överväga", pos: "verb", level: "Medium", phonetic: "/kənˈsɪd.ər/", def: "Tänka noga på någonting innan beslut.", example: "Have you considered applying for that job?" },
+      { id: 121, en: "Contain", sv: "Innehålla", pos: "verb", level: "Medium", phonetic: "/kənˈteɪn/", def: "Ha någonting inuti sig.", example: "Oranges contain high amounts of vitamin C." },
+      { id: 122, en: "Defend", sv: "Försvara", pos: "verb", level: "Medium", phonetic: "/dɪˈfend/", def: "Skydda mot angrepp eller kritik.", example: "Animals defend their young against predators." },
+      { id: 123, en: "Demand", sv: "Kräva", pos: "verb", level: "Medium", phonetic: "/dɪˈmɑːnd/", def: "Begära någonting bestämt.", example: "The workers demand higher wages." },
+      { id: 124, en: "Disappear", sv: "Försvinna", pos: "verb", level: "Medium", phonetic: "/ˌdɪs.əˈpɪər/", def: "Bli osynlig eller gå bort.", example: "The sun disappeared behind thick dark clouds." },
+      { id: 125, en: "Effort", sv: "Ansträngning", pos: "noun", level: "Medium", phonetic: "/ˈef.ət/", def: "Kraft som man lägger ner på att göra någonting.", example: "It takes effort to learn a foreign language." },
+      { id: 126, en: "Gather", sv: "Samla ihop", pos: "verb", level: "Medium", phonetic: "/ˈɡæð.ər/", def: "Samla människor eller saker på ett ställe.", example: "The pupils gathered in the main assembly hall." },
+      { id: 127, en: "Increase", sv: "Öka", pos: "verb", level: "Medium", phonetic: "/ɪnˈkriːs/", def: "Göra någonting större eller mer.", example: "Prices usually increase over time." },
+      { id: 128, en: "Reduce", sv: "Minska", pos: "verb", level: "Medium", phonetic: "/rɪˈdjuːs/", def: "Göra någonting mindre i mängd.", example: "We must reduce our plastic consumption." },
+      { id: 129, en: "Solution", sv: "Lösning", pos: "noun", level: "Medium", phonetic: "/səˈluː.ʃən/", def: "Svaret på ett problem.", example: "We found a clever solution to the riddle." },
+      { id: 130, en: "Source", sv: "Källa", pos: "noun", level: "Medium", phonetic: "/sɔːs/", def: "Där någonting kommer ifrån.", example: "Books are a great source of knowledge." },
+      { id: 131, en: "Threat", sv: "Hot", pos: "noun", level: "Medium", phonetic: "/θret/", def: "En fara eller risken att skadas.", example: "Pollution is a serious threat to sea life." },
+      { id: 132, en: "Achieve", sv: "Uppnå", pos: "verb", level: "Medium", phonetic: "/əˈtʃiːv/", def: "Lyckas nå ett svårt mål.", example: "She worked hard to achieve top results." },
+      { id: 133, en: "Attitude", sv: "Inställning", pos: "noun", level: "Medium", phonetic: "/ˈæt.ɪ.tjuːd/", def: "Sättet man tänker och känner inför något.", example: "A positive attitude helps in difficult times." },
+      { id: 134, en: "Advantage", sv: "Fördel", pos: "noun", level: "Medium", phonetic: "/ədˈvɑːn.tɪdʒ/", def: "En bra omständighet som ger övertag.", example: "Being bilingual is a huge advantage." },
+      { id: 135, en: "Affect", sv: "Påverka", pos: "verb", level: "Medium", phonetic: "/əˈfekt/", def: "Göra skillnad för hur något utvecklas.", example: "Sleep deprivation affects your focus." },
+      { id: 136, en: "Ancient", sv: "Gammal", pos: "adjective", level: "Medium", phonetic: "/ˈeɪn.ʃənt/", def: "Från tusentals år tillbaka i tiden.", example: "They studied ancient Greek history." },
+      { id: 137, en: "Announce", sv: "Meddela", pos: "verb", level: "Medium", phonetic: "/əˈnaʊns/", def: "Ge ut ett officiellt budskap.", example: "The principal will announce the winner." },
+      { id: 138, en: "Apologize", sv: "Be om ursäkt", pos: "verb", level: "Medium", phonetic: "/əˈpɒl.ə.dʒaɪz/", def: "Säga förlåt för ett fel man gjort.", example: "He apologized for arriving late." },
+      { id: 139, en: "Arrange", sv: "Ordna", pos: "verb", level: "Medium", phonetic: "/əˈreɪndʒ/", def: "Planera eller sortera saker snyggt.", example: "We arranged the chairs in a circle." },
+      { id: 140, en: "Audience", sv: "Publik", pos: "noun", level: "Medium", phonetic: "/ˈɔː.di.əns/", def: "Åskådarna på en teater eller konsert.", example: "The audience clapped loudly after the show." },
+      { id: 141, en: "Average", sv: "Genomsnitt", pos: "noun", level: "Medium", phonetic: "/ˈæv.ər.ɪdʒ/", def: "Det vanliga medelvärdet.", example: "The average grade in class was high." },
+      { id: 142, en: "Behavior", sv: "Beteende", pos: "noun", level: "Medium", phonetic: "/bɪˈheɪ.vjər/", def: "Hur man uppför sig inför andra.", example: "Good behavior is rewarded at school." },
+      { id: 143, en: "Belief", sv: "Övertygelse", pos: "noun", level: "Medium", phonetic: "/bɪˈliːf/", def: "Något man är helt säker på är sant.", example: "Freedom of belief is a human right." },
+      { id: 144, en: "Boundary", sv: "Gräns", pos: "noun", level: "Medium", phonetic: "/ˈbaʊn.dər.i/", def: "Linjen som skiljer två områden åt.", example: "The river forms a natural boundary." },
+      { id: 145, en: "Calculate", sv: "Beräkna", pos: "verb", level: "Medium", phonetic: "/ˈkæl.kjə.leɪt/", def: "Räkna ut ett svar med matematik.", example: "Use a calculator to calculate the sum." },
+      { id: 146, en: "Character", sv: "Karaktär", pos: "noun", level: "Medium", phonetic: "/ˈkær.ək.tər/", def: "Personlighet eller rollfigur i en bok.", example: "Harry Potter is a famous book character." },
+      { id: 147, en: "Charity", sv: "Välgörenhet", pos: "noun", level: "Medium", phonetic: "/ˈtʃær.ə.ti/", def: "Organisation som hjälper behövande.", example: "They raised money for a local charity." },
+      { id: 148, en: "Climate", sv: "Klimat", pos: "noun", level: "Medium", phonetic: "/ˈklaɪ.mət/", def: "Mönstret i vädret över lång tid.", example: "Climate change affects polar bears." },
+      { id: 149, en: "Community", sv: "Samhälle", pos: "noun", level: "Medium", phonetic: "/kəˈmjuː.nə.ti/", def: "Folk som bor på samma ställe eller har gemensamma intressen.", example: "Our local community built a new playground." },
+      { id: 150, en: "Complain", sv: "Klaga", pos: "verb", level: "Medium", phonetic: "/kəmˈpleɪn/", def: "Säga att man är missnöjd med något.", example: "Customers complain if the service is slow." },
+      { id: 151, en: "Complicated", sv: "Komplicerad", pos: "adjective", level: "Medium", phonetic: "/ˈkɒm.plɪ.keɪ.tɪd/", def: "Svår att förstå p.g.a. många delar.", example: "The rules of the game are complicated." },
+      { id: 152, en: "Condition", sv: "Tillstånd", pos: "noun", level: "Medium", phonetic: "/kənˈdɪʃ.ən/", def: "Skicket någonting befinner sig i.", example: "The old car is still in good condition." },
+      { id: 153, en: "Confident", sv: "Självsäker", pos: "adjective", level: "Medium", phonetic: "/ˈkɒn.fɪ.dənt/", def: "Tror starkt på sin egen förmåga.", example: "She felt confident before the presentation." },
+      { id: 154, en: "Consumer", sv: "Konsument", pos: "noun", level: "Medium", phonetic: "/kənˈsjuː.mər/", def: "En person som köper varor.", example: "Consumers prefer eco-friendly products." },
+      { id: 155, en: "Creature", sv: "Varelse", pos: "noun", level: "Medium", phonetic: "/ˈkriː.tʃər/", def: "Ett levande djur eller fabeldjur.", example: "Deep oceans hold mysterious creatures." },
+      { id: 156, en: "Curiosity", sv: "Nyfikenhet", pos: "noun", level: "Medium", phonetic: "/ˌkjʊə.riˈɒs.ə.ti/", def: "Viljan att få veta och lära sig mer.", example: "Curiosity led him to explore the cave." },
+      { id: 157, en: "Damage", sv: "Skada", pos: "noun", level: "Medium", phonetic: "/ˈdæm.ɪdʒ/", def: "Förstörelse på en sak eller byggnad.", example: "The storm caused damage to houses." },
+      { id: 158, en: "Decrease", sv: "Minska", pos: "verb", level: "Medium", phonetic: "/dɪˈkriːs/", def: "Göra mindre till antalet.", example: "Traffic usually decreases at night." },
+      { id: 159, en: "Definite", sv: "Bestämd", pos: "adjective", level: "Medium", phonetic: "/ˈdef.ɪ.nət/", def: "Helt säker och utan tvivel.", example: "We have a definite answer now." },
+      { id: 160, en: "Delay", sv: "Fördröjning", pos: "noun", level: "Medium", phonetic: "/dɪˈleɪ/", def: "När saker tar längre tid än väntat.", example: "There was a delay on the train track." },
+      { id: 161, en: "Department", sv: "Avdelning", pos: "noun", level: "Medium", phonetic: "/dɪˈpɑːt.mənt/", def: "En specifik del av en större organisation.", example: "She works in the sales department." },
+      { id: 162, en: "Destroy", sv: "Förstöra", pos: "verb", level: "Medium", phonetic: "/dɪˈstrɔɪ/", def: "Slå sönder någonting helt.", example: "Fire can destroy a wooden house quickly." },
+      { id: 163, en: "Detail", sv: "Detalj", pos: "noun", level: "Medium", phonetic: "/ˈdiː.teɪl/", def: "En liten enskild del av en helhet.", example: "Pay attention to every detail in the text." },
+      { id: 164, en: "Determine", sv: "Avgöra", pos: "verb", level: "Medium", phonetic: "/dɪˈtɜː.mɪn/", def: "Fatta ett slutgiltigt beslut.", example: "Your hard work will determine your success." },
+      { id: 165, en: "Direct", sv: "Direkt", pos: "adjective", level: "Medium", phonetic: "/daɪˈrekt/", def: "Utan några omvägar emellan.", example: "Take a direct bus to the station." },
+      { id: 166, en: "Disagree", sv: "Hålla inte med", pos: "verb", level: "Medium", phonetic: "/ˌdɪs.əˈɡriː/", def: "Tycka helt annorlunda än någon annan.", example: "It is okay to disagree respectfully." },
+      { id: 167, en: "Disaster", sv: "Katastrof", pos: "noun", level: "Medium", phonetic: "/dɪˈzɑː.stər/", def: "En mycket svår och tragisk händelse.", example: "The earthquake was a tragic disaster." },
+      { id: 168, en: "Donate", sv: "Donera", pos: "verb", level: "Medium", phonetic: "/dəʊˈneɪt/", def: "Giva bort pengar eller saker till hjälp.", example: "People donate clothes to refugees." },
+      { id: 169, en: "Education", sv: "Utbildning", pos: "noun", level: "Medium", phonetic: "/ˌedʒ.ʊˈkeɪ.ʃən/", def: "Skolgång och lärande i ett system.", example: "A good education opens many doors." },
+      { id: 170, en: "Effective", sv: "Effektiv", pos: "adjective", level: "Medium", phonetic: "/ɪˈfek.tɪv/", def: "Ger ett snabbt och bra resultat.", example: "This soap is effective against bacteria." },
+      { id: 171, en: "Embarrass", sv: "Skämma ut", pos: "verb", level: "Medium", phonetic: "/ɪmˈbær.əs/", def: "Göra att någon känner sig bortgjord.", example: "Parents sometimes embarrass their kids." },
+      { id: 172, en: "Energy", sv: "Energi", pos: "noun", level: "Medium", phonetic: "/ˈen.ə.dʒi/", def: "Kraften man har att arbeta och orka.", example: "Solar panels convert sunlight to energy." },
+      { id: 173, en: "Enormous", sv: "Enorm", pos: "adjective", level: "Medium", phonetic: "/ɪˈnɔː.məs/", def: "Jättestor, enormt omfång.", example: "The cruise ship was enormous." },
+      { id: 174, en: "Equal", sv: "Jämställd", pos: "adjective", level: "Medium", phonetic: "/ˈiː.kwəl/", def: "Har samma rättigheter och värde.", example: "Everyone deserves equal opportunities." },
+      { id: 175, en: "Equipment", sv: "Utrustning", pos: "noun", level: "Medium", phonetic: "/ɪˈkwɪp.mənt/", def: "Verktyg och prylar för en specifik aktivitet.", example: "Hockey requires safety equipment." },
+      { id: 176, en: "Escape", sv: "Rymma", pos: "verb", level: "Medium", phonetic: "/ɪˈskeɪp/", def: "Ta sig bort från fångenskap.", example: "The bird managed to escape from the cage." },
+      { id: 177, en: "Establish", sv: "Etablera", pos: "verb", level: "Medium", phonetic: "/ɪˈstæb.lɪʃ/", def: "Grunda någonting bestående.", example: "The company was established in 1995." },
+      { id: 178, en: "Event", sv: "Evenemang", pos: "noun", level: "Medium", phonetic: "/ɪˈvent/", def: "En planerad sammankomst eller händelse.", example: "The sports event attracted thousands." },
+      { id: 179, en: "Exactly", sv: "Exakt", pos: "adverb", level: "Medium", phonetic: "/ɪɡˈzækt.li/", def: "Helt precis utan avvikelser.", example: "You arrived at exactly three o'clock." },
+      { id: 180, en: "Examine", sv: "Undersöka", pos: "verb", level: "Medium", phonetic: "/ɪɡˈzæm.ɪn/", def: "Titta mycket noga på något.", example: "The doctor examined my sore throat." },
+      { id: 181, en: "Excellent", sv: "Utmärkt", pos: "adjective", level: "Medium", phonetic: "/ˈek.səl.ənt/", def: "Mycket bra, högsta klass.", example: "She gave an excellent speech today." },
+      { id: 182, en: "Exchange", sv: "Utbyta", pos: "verb", level: "Medium", phonetic: "/ɪksˈtʃeɪndʒ/", def: "Byta en sak mot en annan.", example: "Pupils exchange gifts during Christmas." },
+      { id: 183, en: "Expense", sv: "Kostnad", pos: "noun", level: "Medium", phonetic: "/ɪksˈpens/", def: "Pengar man tvingas betala ut.", example: "Travel can be a big expense." },
+      { id: 184, en: "Experiment", sv: "Experiment", pos: "noun", level: "Medium", phonetic: "/ɪksˈper.ɪ.mənt/", def: "Ett vetenskapligt test.", example: "We conducted an experiment in science class." },
+      { id: 185, en: "Express", sv: "Uttrycka", pos: "verb", level: "Medium", phonetic: "/ɪksˈpres/", def: "Visa känslor eller tankar med ord.", example: "Art is a way to express feelings." },
+      { id: 186, en: "Facility", sv: "Anläggning", pos: "noun", level: "Medium", phonetic: "/fəˈsɪl.ə.ti/", def: "Byggnad för en viss verksamhet.", example: "The school has a modern sports facility." },
+      { id: 187, en: "Failure", sv: "Misslyckande", pos: "noun", level: "Medium", phonetic: "/ˈfeɪ.ljər/", def: "När man inte når avsett resultat.", example: "Learn from every failure you experience." },
+      { id: 188, en: "Feature", sv: "Kännetecken", pos: "noun", level: "Medium", phonetic: "/ˈfiː.tʃər/", def: "En utmärkande del av något.", example: "A key feature of this app is dark mode." },
+      { id: 189, en: "Focus", sv: "Fokusera", pos: "verb", level: "Medium", phonetic: "/ˈfəʊ.kəs/", def: "Rikta all uppmärksamhet på en sak.", example: "Focus on your test paper." },
+      { id: 190, en: "Forgive", sv: "Förlåta", pos: "verb", level: "Medium", phonetic: "/fəˈɡɪv/", def: "Sluta vara arg på någon som gjort fel.", example: "It takes courage to forgive someone." },
+      { id: 191, en: "Freedom", sv: "Frihet", pos: "noun", level: "Medium", phonetic: "/ˈfriː.dəm/", def: "Rätten att välja själv utan tvång.", example: "Freedom of expression is vital." },
+      { id: 192, en: "Frequent", sv: "Frekvent", pos: "adjective", level: "Medium", phonetic: "/ˈfriː.kwənt/", def: "Inträffar ofta om och om igen.", example: "Buses are frequent during peak hours." },
+      { id: 193, en: "Fuel", sv: "Bränsle", pos: "noun", level: "Medium", phonetic: "/ˈfjuː.əl/", def: "Materia som drivs till energi t.ex. bensin.", example: "Electric cars do not use fossil fuel." },
+      { id: 194, en: "Function", sv: "Funktion", pos: "noun", level: "Medium", phonetic: "/ˈfʌŋk.ʃən/", def: "Sättet som någonting fungerar på.", example: "What is the function of this button?" },
+      { id: 195, en: "Furniture", sv: "Möbler", pos: "noun", level: "Medium", phonetic: "/ˈfɜː.nɪ.tʃər/", def: "Stolar, bord och sängar i ett rum.", example: "They bought new furniture for the apartment." },
+      { id: 196, en: "General", sv: "Allmän", pos: "adjective", level: "Medium", phonetic: "/ˈdʒen.ər.əl/", def: "Gäller för det mesta och det flesta.", example: "This is general information for all students." },
+      { id: 197, en: "Generous", sv: "Generös", pos: "adjective", level: "Medium", phonetic: "/ˈdʒen.ər.əs/", def: "Delar gärna med sig av vad man har.", example: "Thank you for your generous gift." },
+      { id: 198, en: "Goal", sv: "Mål", pos: "noun", level: "Medium", phonetic: "/ɡəʊl/", def: "Det resultat man strävar efter.", example: "My goal is to learn 500 words." },
+      { id: 199, en: "Government", sv: "Regering", pos: "noun", level: "Medium", phonetic: "/ˈɡʌv.ən.mənt/", def: "Gruppen som styr ett land.", example: "The government passed new environmental laws." },
+      { id: 200, en: "Guidance", sv: "Vägledning", pos: "noun", level: "Medium", phonetic: "/ˈɡaɪ.dəns/", def: "Hjälp och råd i en viss riktning.", example: "Seek guidance from your teacher." },
+
+      // --- HARD LEVEL (100 words) ---
+      { id: 201, en: "Influence", sv: "Inflytande", pos: "noun", level: "Hard", phonetic: "/ˈɪn.flu.əns/", def: "Förmågan att påverka hur någon tänker.", example: "Music has a strong influence on young people." },
+      { id: 202, en: "Allow", sv: "Tillåta", pos: "verb", level: "Hard", phonetic: "/əˈlaʊ/", def: "Ge tillåtelse till något.", example: "Pets are not allowed in the school library." },
+      { id: 203, en: "Consequence", sv: "Konsekvens", pos: "noun", level: "Hard", phonetic: "/ˈkɒn.sɪ.kwəns/", def: "Ett resultat av en handling.", example: "Every decision has a consequence." },
+      { id: 204, en: "Essential", sv: "Nödvändig", pos: "adjective", level: "Hard", phonetic: "/ɪˈsen.ʃəl/", def: "Helt avgörande och absolut nödvändig.", example: "Water is essential for all living creatures." },
+      { id: 205, en: "Persuade", sv: "Övertala", pos: "verb", level: "Hard", phonetic: "/pəˈsweɪd/", def: "Få någon att hålla med genom argument.", example: "He tried to persuade his parents to buy a dog." },
+      { id: 206, en: "Acknowledge", sv: "Erkänna", pos: "verb", level: "Hard", phonetic: "/əkˈnɒl.ɪdʒ/", def: "Acceptera eller erkänna att något är sant.", example: "She acknowledged her mistake and apologized." },
+      { id: 207, en: "Analyze", sv: "Analysera", pos: "verb", level: "Hard", phonetic: "/ˈæn.əl.aɪz/", def: "Undersöka någonting noggrant i detalj.", example: "We need to analyze the results of the survey." },
+      { id: 208, en: "Approach", sv: "Tillvägagångssätt", pos: "noun", level: "Hard", phonetic: "/əˈprəʊtʃ/", def: "Ett sätt att angripa ett problem.", example: "We need a new approach to solve this puzzle." },
+      { id: 209, en: "Assume", sv: "Anta", pos: "verb", level: "Hard", phonetic: "/əˈsjuːm/", def: "Tro någonting utan att ha bevis ännu.", example: "Don't assume everything online is true." },
+      { id: 210, en: "Authority", sv: "Auktoritet", pos: "noun", level: "Hard", phonetic: "/ɔːˈθɒr.ə.ti/", def: "Rätten eller makten att ge order.", example: "The principal has the authority in school." },
+      { id: 211, en: "Concept", sv: "Begrepp", pos: "noun", level: "Hard", phonetic: "/ˈkɒn.sept/", def: "En övergripande idé eller teoretisk modell.", example: "Democracy is an important political concept." },
+      { id: 212, en: "Conclusion", sv: "Slutsats", pos: "noun", level: "Hard", phonetic: "/kənˈkluː.ʒən/", def: "Det slutgiltiga svaret efter en undersökning.", example: "In conclusion, reading daily boosts vocabulary." },
+      { id: 213, en: "Demonstrate", sv: "Demonstrera", pos: "verb", level: "Hard", phonetic: "/ˈdem.ən.streɪt/", def: "Visa tydligt hur någonting fungerar.", example: "The teacher demonstrated the experiment." },
+      { id: 214, en: "Economy", sv: "Ekonomi", pos: "noun", level: "Hard", phonetic: "/ɪˈkɒn.ə.mi/", def: "Systemet för pengar, handel och industri.", example: "Tourism is vital for the local economy." },
+      { id: 215, en: "Evidence", sv: "Bevis", pos: "noun", level: "Hard", phonetic: "/ˈev.ɪ.dəns/", def: "Fakta som visar att någonting är sant.", example: "The detective found crucial evidence at the scene." },
+      { id: 216, en: "Impact", sv: "Påverkan", pos: "noun", level: "Hard", phonetic: "/ˈɪm.pækt/", def: "En stark effekt eller konsekvens.", example: "Social media has a huge impact on society." },
+      { id: 217, en: "Individual", sv: "Individ", pos: "noun", level: "Hard", phonetic: "/ˌɪn.dɪˈvɪdʒ.u.əl/", def: "En enskild person skild från gruppen.", example: "Every individual has unique talents." },
+      { id: 218, en: "Major", sv: "Betydande", pos: "adjective", level: "Hard", phonetic: "/ˈmeɪ.dʒər/", def: "Väldigt stor, viktig eller allvarlig.", example: "Traffic jams are a major issue in big cities." },
+      { id: 219, en: "Obtain", sv: "Erhålla", pos: "verb", level: "Hard", phonetic: "/əbˈteɪn/", def: "Få någonting genom ansträngning.", example: "You must obtain permission before entering." },
+      { id: 220, en: "Previous", sv: "Tidigare", pos: "adjective", level: "Hard", phonetic: "/ˈpriː.vi.əs/", def: "Det som hände före det nuvarande.", example: "Look back at your previous test results." },
+      { id: 221, en: "Primary", sv: "Främsta", pos: "adjective", level: "Hard", phonetic: "/ˈpraɪ.mər.i/", def: "Det viktigaste eller första steget.", example: "Our primary goal is to finish on time." },
+      { id: 222, en: "Principle", sv: "Princip", pos: "noun", level: "Hard", phonetic: "/ˈprɪn.sə.pəl/", def: "En grundläggande regel eller värdering.", example: "Honesty is a fundamental principle." },
+      { id: 223, en: "Significant", sv: "Betydande", pos: "adjective", level: "Hard", phonetic: "/sɪɡˈnɪf.ɪ.kənt/", def: "Stor, märkbar eller mycket viktig.", example: "There was a significant improvement in grades." },
+      { id: 224, en: "Strategy", sv: "Strategi", pos: "noun", level: "Hard", phonetic: "/ˈstræt.ə.dʒi/", def: "En genomtänkt plan för att nå ett mål.", example: "We need a smart strategy to win the match." },
+      { id: 225, en: "Sufficient", sv: "Tillräcklig", pos: "adjective", level: "Hard", phonetic: "/səˈfɪʃ.ənt/", def: "Så mycket som behövs, lagom.", example: "Make sure you get sufficient sleep every night." },
+      { id: 226, en: "Transform", sv: "Omvandla", pos: "verb", level: "Hard", phonetic: "/trænsˈfɔːm/", def: "Ändra karaktär helt.", example: "Caterpillars transform into butterflies." },
+      { id: 227, en: "Accurate", sv: "Korrekt", pos: "adjective", level: "Hard", phonetic: "/ˈæk.jə.rət/", def: "Helt rätt utan några fel.", example: "Her weather forecast was accurate." },
+      { id: 228, en: "Adequate", sv: "Godtagbar", pos: "adjective", level: "Hard", phonetic: "/ˈæd.ə.kwət/", def: "Bra nog för ett visst syfte.", example: "The room had adequate space for everyone." },
+      { id: 229, en: "Alternative", sv: "Alternativ", pos: "noun", level: "Hard", phonetic: "/ɒlˈtɜː.nə.tɪv/", def: "En annan möjlighet eller valväg.", example: "Cycling is a green alternative to driving." },
+      { id: 230, en: "Capacity", sv: "Kapacitet", pos: "noun", level: "Hard", phonetic: "/kəˈpæs.ə.ti/", def: "Mängden någonting kan rymma.", example: "The stadium has a seating capacity of 50,000." },
+      { id: 231, en: "Distinct", sv: "Tydlig", pos: "adjective", level: "Hard", phonetic: "/dɪˈstɪŋkt/", def: "Lätt att känna igen och skilja från annat.", example: "There is a distinct smell of fresh coffee." },
+      { id: 232, en: "Estimate", sv: "Uppskatta", pos: "verb", level: "Hard", phonetic: "/ˈes.tɪ.meɪt/", def: "Göra en beräkning baserad på fakta.", example: "It is estimated that 100 people attended." },
+      { id: 233, en: "Guarantee", sv: "Garantera", pos: "verb", level: "Hard", phonetic: "/ˌɡær.ənˈtiː/", def: "Utlova helt säkert att någonting gäller.", example: "Hard work does not guarantee instant success." },
+      { id: 234, en: "Maintain", sv: "Upprätthålla", pos: "verb", level: "Hard", phonetic: "/meɪnˈteɪn/", def: "Fortsätta ha någonting i gott skick.", example: "You should maintain a healthy daily routine." },
+      { id: 235, en: "Predict", sv: "Förutsäga", pos: "verb", level: "Hard", phonetic: "/prɪˈdɪkt/", def: "Säga vad som händer i framtiden.", example: "No one can predict the exact future." },
+      { id: 236, en: "Abundant", sv: "Riklig", pos: "adjective", level: "Hard", phonetic: "/əˈbʌn.dənt/", def: "Finns i mycket stora mängder.", example: "Tropical rainforests have abundant wildlife." },
+      { id: 237, en: "Accomplish", sv: "Åstadkomma", pos: "verb", level: "Hard", phonetic: "/əˈkʌm.plɪʃ/", def: "Slutföra ett krävande mål framgångsrikt.", example: "You can accomplish anything with practice." },
+      { id: 238, en: "Accumulate", sv: "Samla på sig", pos: "verb", level: "Hard", phonetic: "/əˈkjuː.mjə.leɪt/", def: "Bygga upp mer av något över tid.", example: "Dust will accumulate if you don't clean." },
+      { id: 239, en: "Acquire", sv: "Förvärva", pos: "verb", level: "Hard", phonetic: "/əˈkwaɪər/", def: "Skaffa sig kunskap eller ägodelar.", example: "Students acquire skills through practice." },
+      { id: 240, en: "Adapt", sv: "Anpassa", pos: "verb", level: "Hard", phonetic: "/əˈdæpt/", def: "Ändra sig efter nya omständigheter.", example: "Animals must adapt to changing seasons." },
+      { id: 241, en: "Advocate", sv: "Förespråka", pos: "verb", level: "Hard", phonetic: "/ˈæd.və.keɪt/", def: "Tala varmt för en viss sak.", example: "Doctors advocate for healthy living." },
+      { id: 242, en: "Allocate", sv: "Tilldela", pos: "verb", level: "Hard", phonetic: "/ˈæl.ə.keɪt/", def: "Giva ut resurser för ett visst syfte.", example: "The council will allocate funds for schools." },
+      { id: 243, en: "Ambiguous", sv: "Mångtydig", pos: "adjective", level: "Hard", phonetic: "/æmˈbɪɡ.ju.əs/", def: "Otydlig och kan tolkas på flera sätt.", example: "The ending of the book was ambiguous." },
+      { id: 244, en: "Anticipate", sv: "Förutse", pos: "verb", level: "Hard", phonetic: "/ænˈtɪs.ɪ.peɪt/", def: "Vänta sig någonting i förväg.", example: "We anticipate a large crowd at the fair." },
+      { id: 245, en: "Appreciate", sv: "Uppskatta", pos: "verb", level: "Hard", phonetic: "/əˈpriː.ʃi.eɪt/", def: "Vara mycket tacksam för något.", example: "I really appreciate your kind help." },
+      { id: 246, en: "Appropriate", sv: "Lämplig", pos: "adjective", level: "Hard", phonetic: "/əˈprəʊ.pri.ət/", def: "Rätt och passande för situationen.", example: "Wear appropriate clothing for a job interview." },
+      { id: 247, en: "Assess", sv: "Bedöma", pos: "verb", level: "Hard", phonetic: "/əˈses/", def: "Utvärdera kvaliteten på någonting.", example: "Teachers assess pupils' reading ability." },
+      { id: 248, en: "Assist", sv: "Hjälpa", pos: "verb", level: "Hard", phonetic: "/əˈsɪst/", def: "Ge en hjälpande hand vid ett arbete.", example: "The assistant will assist you with registration." },
+      { id: 249, en: "Attribute", sv: "Tillskriva", pos: "verb", level: "Hard", phonetic: "/əˈtrɪb.juːt/", def: "Anse att någonting beror på något visst.", example: "They attribute their success to teamwork." },
+      { id: 250, en: "Coincide", sv: "Sammanfalla", pos: "verb", level: "Hard", phonetic: "/ˌkəʊ.ɪnˈsaɪd/", def: "Hända exakt samtidigt som något annat.", example: "My birthday coincided with the national holiday." },
+      { id: 251, en: "Collaborate", sv: "Samarbeta", pos: "verb", level: "Hard", phonetic: "/kəˈlæb.ə.reɪt/", def: "Arbeta tillsammans mot samma mål.", example: "Two schools collaborated on a science project." },
+      { id: 252, en: "Collapse", sv: "Kollapsa", pos: "verb", level: "Hard", phonetic: "/kəˈlæps/", def: "Falla ihop plötsligt.", example: "The old wooden bridge collapsed in the flood." },
+      { id: 253, en: "Commence", sv: "Börja", pos: "verb", level: "Hard", phonetic: "/kəˈmens/", def: "Inleda en formell händelse.", example: "The ceremony will commence at 10 AM." },
+      { id: 254, en: "Commit", sv: "Förplikta", pos: "verb", level: "Hard", phonetic: "/kəˈmɪt/", def: "Lova sin fulla insats till något.", example: "She committed herself to daily training." },
+      { id: 255, en: "Compatible", sv: "Kompatibel", pos: "adjective", level: "Hard", phonetic: "/kəmˈpæt.ə.bəl/", def: "Fungerar bra ihop utan problem.", example: "Ensure the software is compatible with your PC." },
+      { id: 256, en: "Compensate", sv: "Kompensera", pos: "verb", level: "Hard", phonetic: "/ˈkɒm.pən.seɪt/", def: "Gottgöra en förlust eller skada.", example: "The airline compensated passengers for the delay." },
+      { id: 257, en: "Compile", sv: "Sammanställa", pos: "verb", level: "Hard", phonetic: "/kəmˈpaɪl/", def: "Samla information till en helhet.", example: "We compiled a list of recommended books." },
+      { id: 258, en: "Complex", sv: "Komplex", pos: "adjective", level: "Hard", phonetic: "/ˈkɒm.pleks/", def: "Sammansatt av många svåra delar.", example: "Human brain structure is extremely complex." },
+      { id: 259, en: "Comply", sv: "Följa regler", pos: "verb", level: "Hard", phonetic: "/kəmˈplaɪ/", def: "Lystra till gällande lagar.", example: "All students must comply with safety rules." },
+      { id: 260, en: "Comprehensive", sv: "Omfattande", pos: "adjective", level: "Hard", phonetic: "/ˌkɒm.prɪˈhen.sɪv/", def: "Täcker in allt som behövs.", example: "The guide offers comprehensive grammar rules." },
+      { id: 261, en: "Concede", sv: "Medge", pos: "verb", level: "Hard", phonetic: "/kənˈsiːd/", def: "Erkänna att motståndaren har rätt.", example: "He conceded that he had made a mistake." },
+      { id: 262, en: "Concentrate", sv: "Koncentrera", pos: "verb", level: "Hard", phonetic: "/ˈkɒn.sən.treɪt/", def: "Rikta all uppmärksamhet på uppgiften.", example: "Quiet rooms help students concentrate." },
+      { id: 263, en: "Conduct", sv: "Genomföra", pos: "verb", level: "Hard", phonetic: "/kənˈdʌkt/", def: "Utföra en studie eller ett test.", example: "Scientists conduct experiments in laboratories." },
+      { id: 264, en: "Confirm", sv: "Bekräfta", pos: "verb", level: "Hard", phonetic: "/kənˈfɜːm/", def: "Intyga att en uppgift stämmer.", example: "Please confirm your email address." },
+      { id: 265, en: "Conform", sv: "Anpassa sig", pos: "verb", level: "Hard", phonetic: "/kənˈfɔːm/", def: "Följa rådande normer i en grupp.", example: "Teenagers often conform to peer expectations." },
+      { id: 266, en: "Consensus", sv: "Enighet", pos: "noun", level: "Hard", phonetic: "/kənˈsen.səs/", def: "När alla är helt överens i en fråga.", example: "The committee reached a general consensus." },
+      { id: 267, en: "Consent", sv: "Samtycke", pos: "noun", level: "Hard", phonetic: "/kənˈsent/", def: "Tillåtelse eller godkännande.", example: "You need parental consent for the school trip." },
+      { id: 268, en: "Consistent", sv: "Konsekvent", pos: "adjective", level: "Hard", phonetic: "/kənˈsɪs.tənt/", def: "Gör på samma bra sätt varje gång.", example: "Consistent practice leads to improvement." },
+      { id: 269, en: "Constitute", sv: "Utgöra", pos: "verb", level: "Hard", phonetic: "/ˈkɒn.stɪ.tjuːt/", def: "Bilda eller utgöra en del av något.", example: "Women constitute half of the workforce." },
+      { id: 270, en: "Construct", sv: "Konstruera", pos: "verb", level: "Hard", phonetic: "/kənˈstrʌkt/", def: "Bygga upp något med struktur.", example: "Construct a strong argument in your essay." },
+      { id: 271, en: "Consume", sv: "Konsumera", pos: "verb", level: "Hard", phonetic: "/kənˈsjuːm/", def: "Använda upp resurser eller äta.", example: "Vehicles consume large amounts of fuel." },
+      { id: 272, en: "Contemplate", sv: "Begrunda", pos: "verb", level: "Hard", phonetic: "/ˈkɒn.təm.pleɪt/", def: "Tänka djupgående och länge på något.", example: "She contemplated moving to another country." },
+      { id: 273, en: "Contradict", sv: "Säga emot", pos: "verb", level: "Hard", phonetic: "/ˌkɒn.trəˈdɪkt/", def: "Påstå raka motsatsen till det som sagts.", example: "His actions contradict his speeches." },
+      { id: 274, en: "Contribute", sv: "Bidra", pos: "verb", level: "Hard", phonetic: "/kənˈtrɪb.juːt/", def: "Ge sin del till ett gemensamt resultat.", example: "Everyone should contribute to group work." },
+      { id: 275, en: "Controversial", sv: "Kontroversiell", pos: "adjective", level: "Hard", phonetic: "/ˌkɒn.trəˈvɜː.ʃəl/", def: "Väcker starka diskussioner och delade meningar.", example: "Nuclear energy remains a controversial topic." },
+      { id: 276, en: "Convey", sv: "Förmedla", pos: "verb", level: "Hard", phonetic: "/kənˈveɪ/", def: "Föra fram ett budskap eller en känsla.", example: "Poetry can convey deep emotional truths." },
+      { id: 277, en: "Convince", sv: "Övertyga", pos: "verb", level: "Hard", phonetic: "/kənˈvɪns/", def: "Få någon att tro på något helt.", example: "She convinced her team to try a new idea." },
+      { id: 278, en: "Crucial", sv: "Avgörande", pos: "adjective", level: "Hard", phonetic: "/ˈkruː.ʃəl/", def: "Lika viktigt som liv och död.", example: "Teamwork is crucial for winning the match." },
+      { id: 279, en: "Debate", sv: "Debatt", pos: "noun", level: "Hard", phonetic: "/dɪˈbeɪt/", def: "En formell diskussion med argument för och emot.", example: "The class held a debate on social media." },
+      { id: 280, en: "Decline", sv: "Minska", pos: "verb", level: "Hard", phonetic: "/dɪˈklaɪn/", def: "Minska i mängd eller tacka nej.", example: "Sales began to decline during winter." },
+      { id: 281, en: "Deduce", sv: "Härleda", pos: "verb", level: "Hard", phonetic: "/dɪˈdjuːs/", def: "Dra en logisk slutsats från fakta.", example: "The detective deduced the answer from clues." },
+      { id: 282, en: "Deny", sv: "Förneka", pos: "verb", level: "Hard", phonetic: "/dɪˈnaɪ/", def: "Säga att någonting inte stämmer.", example: "He denied breaking the window." },
+      { id: 283, en: "Depict", sv: "Skildra", pos: "verb", level: "Hard", phonetic: "/dɪˈpɪkt/", def: "Beskriva eller avbilda i konst.", example: "The painting depicts a peaceful rural landscape." },
+      { id: 284, en: "Designate", sv: "Utse", pos: "verb", level: "Hard", phonetic: "/ˈdez.ɪɡ.neɪt/", def: "Märka ut eller välja någon för en viss roll.", example: "Designate a leader for your group project." },
+      { id: 285, en: "Detect", sv: "Upptäcka", pos: "verb", level: "Hard", phonetic: "/dɪˈtekt/", def: "Uppfatta någonting som är svårt att se.", example: "Smoke detectors detect fires early." },
+      { id: 286, en: "Deviate", sv: "Avvika", pos: "verb", level: "Hard", phonetic: "/ˈdiː.vi.eɪt/", def: "Gå ifrån den vanliga vägen eller planen.", example: "Do not deviate from the original plan." },
+      { id: 287, en: "Diminish", sv: "Minska", pos: "verb", level: "Hard", phonetic: "/dɪˈmɪn.ɪʃ/", def: "Bli mindre i kraft eller storlek.", example: "My fear began to diminish gradually." },
+      { id: 288, en: "Diverse", sv: "Mångfaldig", pos: "adjective", level: "Hard", phonetic: "/daɪˈvɜːs/", def: "Innehåller många olika sorter.", example: "London has a very diverse population." },
+      { id: 289, en: "Domain", sv: "Område", pos: "noun", level: "Hard", phonetic: "/dəˈmeɪn/", def: "Ett område av kunskap eller aktivitet.", example: "Information security is his domain." },
+      { id: 290, en: "Dominant", sv: "Dominant", pos: "adjective", level: "Hard", phonetic: "/ˈdɒm.ɪ.nənt/", def: "Mest kraftfull och styrande.", example: "English is the dominant global language." },
+      { id: 291, en: "Drastic", sv: "Drastisk", pos: "adjective", level: "Hard", phonetic: "/ˈdræs.tɪk/", def: "Kraftfull och med stora förändringar.", example: "We need drastic measures to curb pollution." },
+      { id: 292, en: "Duration", sv: "Varaktighet", pos: "noun", level: "Hard", phonetic: "/djʊəˈreɪ.ʃən/", def: "Tidslängden någonting pågår.", example: "Keep quiet for the duration of the test." },
+      { id: 293, en: "Elaborate", sv: "Utveckla i detalj", pos: "verb", level: "Hard", phonetic: "/ɪˈlæb.ə.reɪt/", def: "Förklara mer ingående med fler detaljer.", example: "Could you please elaborate on your point?" },
+      { id: 294, en: "Eliminate", sv: "Eliminera", pos: "verb", level: "Hard", phonetic: "/ɪˈlɪm.ɪ.neɪt/", def: "Ta bort helt och hållet.", example: "Eliminate wrong answers first in a quiz." },
+      { id: 295, en: "Emerge", sv: "Växa fram", pos: "verb", level: "Hard", phonetic: "/ɪˈmɜːdʒ/", def: "Komma fram och bli känd.", example: "New green technologies are emerging fast." },
+      { id: 296, en: "Emphasis", sv: "Betonande", pos: "noun", level: "Hard", phonetic: "/ˈem.fə.sɪs/", def: "Särskild vikt man lägger på något.", example: "The school puts emphasis on student wellbeing." },
+      { id: 297, en: "Enhance", sv: "Förbättra", pos: "verb", level: "Hard", phonetic: "/ɪnˈhɑːns/", def: "Höja kvaliteten ytterligare.", example: "Reading books enhances your vocabulary." },
+      { id: 298, en: "Ensure", sv: "Säkerställa", pos: "verb", level: "Hard", phonetic: "/ɪnˈʃɔːr/", def: "Se till att någonting säkert sker.", example: "Double-check your work to ensure accuracy." },
+      { id: 299, en: "Evaluate", sv: "Utvärdera", pos: "verb", level: "Hard", phonetic: "/ɪˈvæl.ju.eɪt/", def: "Bedöma och sätta betyg på resultat.", example: "The judge will evaluate each performance." },
+      { id: 300, en: "Vital", sv: "Livsviktig", pos: "adjective", level: "Hard", phonetic: "/ˈvaɪ.təl/", def: "Absolut livsavgörande.", example: "Fresh air and water are vital for survival." }
+    ];
+
+    /* =================================================================
+       STATE VARIABLES
+       ================================================================= */
+    let currentLevel = 'Easy'; // Default is Easy
+    let filteredWords = [];
+    let currentMode = 'flashcards';
+    let xpCount = 0;
+    let soundEnabled = true;
+
+    // Flashcard State
+    let flashcardIndex = 0;
+    let isFlipped = false;
+
+    // Translation Quiz State
+    let transCurrentWord = null;
+
+    // Spelling State
+    let spellingCurrentWord = null;
+
+    // Sentence State
+    let sentenceCurrentWord = null;
+
+    /* =================================================================
+       INITIALIZATION & FILTERING
+       ================================================================= */
+    window.onload = function() {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      applyLevelFilter();
+      updateModeUI();
+    };
+
+    function changeLevel(newLevel) {
+      currentLevel = newLevel;
+      applyLevelFilter();
+    }
+
+    function applyLevelFilter() {
+      if (currentLevel === 'ALL') {
+        filteredWords = [...VOCABULARY_DATA];
+      } else {
+        filteredWords = VOCABULARY_DATA.filter(w => w.level === currentLevel);
+      }
+
+      // Reset pointers
+      flashcardIndex = 0;
+      isFlipped = false;
+      
+      // Update Level Label Header Banner
+      const labelElem = document.getElementById('active-level-label');
+      if (labelElem) {
+        labelElem.innerText = currentLevel === 'ALL' 
+          ? 'ALL DIFFICULTIES (EASY TO HARD)' 
+          : `VOCABULARY PRACTICE (${currentLevel.toUpperCase()} LEVEL)`;
+      }
+
+      // Refresh views
+      renderFlashcard();
+      setupTranslateQuestion();
+      setupSentenceQuestion();
+      setupSpellingQuestion();
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const textSpan = document.getElementById('sound-status-text');
+      const icon = document.getElementById('sound-icon');
+      
+      if (soundEnabled) {
+        textSpan.innerText = 'ON';
+        textSpan.className = 'text-emerald-600';
+        icon.className = 'w-4 h-4 text-emerald-600';
+      } else {
+        textSpan.innerText = 'OFF';
+        textSpan.className = 'text-slate-400';
+        icon.className = 'w-4 h-4 text-slate-400';
+      }
+    }
+
+    function addXP(amount) {
+      xpCount += amount;
+      document.getElementById('xp-counter').innerText = xpCount;
+    }
+
+    function speakWord(word) {
+      if (!soundEnabled) return;
+      const target = word || (filteredWords[flashcardIndex] ? filteredWords[flashcardIndex].en : '');
+      if (!target) return;
+      
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(target);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      } catch(e) {
+        console.warn('Speech synthesis not available', e);
+      }
+    }
+
+    function speakText(text) {
+      speakWord(text);
+    }
+
+    /* =================================================================
+       MODE SWITCHING LOGIC
+       ================================================================= */
+    function switchMode(mode) {
+      currentMode = mode;
+      
+      // Hide all mode sections
+      document.querySelectorAll('.mode-section').forEach(el => el.classList.add('hidden'));
+      
+      // Show targeted section
+      const activeSec = document.getElementById(`section-${mode}`);
+      if (activeSec) activeSec.classList.remove('hidden');
+
+      // Update Header Nav active styles
+      const navKeys = ['flashcards', 'translate', 'sentences', 'spelling'];
+      navKeys.forEach(k => {
+        const desktopBtn = document.getElementById(`nav-${k}`);
+        const mobileBtn = document.getElementById(`mobile-nav-${k}`);
+        
+        if (k === mode) {
+          if (desktopBtn) {
+            desktopBtn.className = "nav-btn px-4 py-2 rounded-xl transition-all duration-200 bg-white text-brand-500 shadow-sm font-bold";
+          }
+          if (mobileBtn) {
+            mobileBtn.className = "mobile-nav-btn px-3 py-1.5 rounded-lg bg-brand-500 text-white font-bold";
+          }
+        } else {
+          if (desktopBtn) {
+            desktopBtn.className = "nav-btn px-4 py-2 rounded-xl transition-all duration-200 text-slate-600 hover:text-slate-900";
+          }
+          if (mobileBtn) {
+            mobileBtn.className = "mobile-nav-btn px-3 py-1.5 rounded-lg text-slate-600";
+          }
+        }
+      });
+
+      // Update Sub-tabs and titles dynamically
+      const titleElem = document.getElementById('mode-main-title');
+      const descElem = document.getElementById('mode-description');
+      const sub1 = document.getElementById('subtab-1');
+      const sub2 = document.getElementById('subtab-2');
+
+      if (mode === 'flashcards') {
+        titleElem.innerText = 'ESSENTIAL WORD STUDIO';
+        descElem.innerText = 'Träna på centrala engelska ord. Vänd på korten för att lära dig uttal, betydelse, exempelmeningar och svenska översättningar.';
+        sub1.className = "px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-500/20";
+        sub2.className = "px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+      } else if (mode === 'translate') {
+        titleElem.innerText = 'TRANSLATION QUIZ';
+        descElem.innerText = 'Testa dina kunskaper! Välj rätt svensk översättning till det engelska ordet.';
+        sub1.className = "px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+        sub2.className = "px-5 py-2 rounded-xl text-xs font-mono font-bold uppercase tracking-wider border transition-all duration-200 bg-brand-500 text-white border-brand-500 shadow-md shadow-brand-500/20";
+      } else if (mode === 'sentences') {
+        titleElem.innerText = 'SENTENCE WRITER LAB';
+        descElem.innerText = 'Använd ordet i en egen skriven engelsk mening. Öva på grammatik och sammanhang.';
+      } else if (mode === 'spelling') {
+        titleElem.innerText = 'SPELLING & DEFINITIONS';
+        descElem.innerText = 'Läs definitionen på engelska och stava ordet korrekt.';
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateModeUI() {
+      switchMode('flashcards');
+    }
+
+    /* =================================================================
+       MODE 1: FLASHCARD LOGIC
+       ================================================================= */
+    function flipCard() {
+      const inner = document.getElementById('flashcard-inner');
+      isFlipped = !isFlipped;
+      if (isFlipped) {
+        inner.classList.add('rotate-y-180');
+      } else {
+        inner.classList.remove('rotate-y-180');
+      }
+    }
+
+    function renderFlashcard() {
+      if (filteredWords.length === 0) return;
+      const wordObj = filteredWords[flashcardIndex];
+
+      // Front
+      document.getElementById('fc-progress').innerText = `WORD ${flashcardIndex + 1} / ${filteredWords.length}`;
+      document.getElementById('fc-level-tag').innerText = wordObj.level.toUpperCase();
+      document.getElementById('fc-word-en').innerText = wordObj.en;
+      document.getElementById('fc-pos').innerText = wordObj.pos;
+      document.getElementById('fc-phonetic').innerText = wordObj.phonetic;
+
+      // Back
+      document.getElementById('fc-back-pos').innerText = wordObj.pos.toUpperCase();
+      document.getElementById('fc-word-sv').innerText = wordObj.sv;
+      document.getElementById('fc-definition').innerText = wordObj.def;
+      document.getElementById('fc-example').innerText = `"${wordObj.example}"`;
+
+      // Reset Flip state
+      isFlipped = false;
+      document.getElementById('flashcard-inner').classList.remove('rotate-y-180');
+    }
+
+    function nextCard() {
+      if (filteredWords.length === 0) return;
+      flashcardIndex = (flashcardIndex + 1) % filteredWords.length;
+      renderFlashcard();
+    }
+
+    function prevCard() {
+      if (filteredWords.length === 0) return;
+      flashcardIndex = (flashcardIndex - 1 + filteredWords.length) % filteredWords.length;
+      renderFlashcard();
+    }
+
+    function markLearned() {
+      addXP(10);
+      nextCard();
+    }
+
+    /* =================================================================
+       MODE 2: TRANSLATION QUIZ LOGIC
+       ================================================================= */
+    function setupTranslateQuestion() {
+      if (filteredWords.length === 0) return;
+      const randomIndex = Math.floor(Math.random() * filteredWords.length);
+      transCurrentWord = filteredWords[randomIndex];
+
+      document.getElementById('trans-level-badge').innerText = transCurrentWord.level.toUpperCase();
+      document.getElementById('trans-target-word').innerText = transCurrentWord.en;
+      document.getElementById('trans-sentence-hint').innerText = `"${transCurrentWord.example}"`;
+      
+      const feedback = document.getElementById('trans-feedback');
+      feedback.className = "hidden p-4 rounded-2xl text-center font-mono text-sm font-bold mb-4";
+
+      // Generate 4 multiple choices (1 correct + 3 distractors)
+      let choices = [transCurrentWord.sv];
+      const allSvTranslations = VOCABULARY_DATA.map(w => w.sv).filter(sv => sv !== transCurrentWord.sv);
+      
+      // Shuffle & pick 3 distractors
+      const shuffledDistractors = allSvTranslations.sort(() => 0.5 - Math.random()).slice(0, 3);
+      choices = [...choices, ...shuffledDistractors].sort(() => 0.5 - Math.random());
+
+      const grid = document.getElementById('trans-options-grid');
+      grid.innerHTML = '';
+
+      choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-brand-50 hover:border-brand-200 hover:text-brand-700 text-slate-800 font-bold text-sm text-center transition flex items-center justify-center";
+        btn.innerText = choice;
+        btn.onclick = () => checkTranslationChoice(choice, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    function checkTranslationChoice(selected, buttonElem) {
+      const feedback = document.getElementById('trans-feedback');
+      const allBtns = document.querySelectorAll('#trans-options-grid button');
+      
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selected === transCurrentWord.sv) {
+        buttonElem.className = "p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-bold text-sm text-center flex items-center justify-center";
+        feedback.innerText = "RÄTT! Bra jobbat! (+15 XP)";
+        feedback.className = "p-4 rounded-2xl text-center font-mono text-sm font-bold mb-4 bg-emerald-100 text-emerald-800 border border-emerald-200 block";
+        addXP(15);
+      } else {
+        buttonElem.className = "p-4 rounded-2xl border-2 border-rose-500 bg-rose-50 text-rose-800 font-bold text-sm text-center flex items-center justify-center";
+        feedback.innerText = `FEL. Rätt svar var: "${transCurrentWord.sv}"`;
+        feedback.className = "p-4 rounded-2xl text-center font-mono text-sm font-bold mb-4 bg-rose-100 text-rose-800 border border-rose-200 block";
+      }
+    }
+
+    function nextTranslateQuestion() {
+      setupTranslateQuestion();
+    }
+
+    /* =================================================================
+       MODE 3: SENTENCE LAB LOGIC
+       ================================================================= */
+    function setupSentenceQuestion() {
+      if (filteredWords.length === 0) return;
+      const randomIndex = Math.floor(Math.random() * filteredWords.length);
+      sentenceCurrentWord = filteredWords[randomIndex];
+
+      document.getElementById('sent-level-badge').innerText = sentenceCurrentWord.level.toUpperCase();
+      document.getElementById('sent-target-word').innerText = sentenceCurrentWord.en;
+      document.getElementById('sent-target-pos').innerText = `(${sentenceCurrentWord.pos} = ${sentenceCurrentWord.sv})`;
+      
+      document.getElementById('sentence-input').value = '';
+      const fb = document.getElementById('sentence-feedback');
+      fb.className = "hidden mb-6 p-4 rounded-2xl border text-sm font-sans";
+    }
+
+    function checkSentence() {
+      const input = document.getElementById('sentence-input').value.trim().toLowerCase();
+      const targetWord = sentenceCurrentWord.en.toLowerCase();
+      const fb = document.getElementById('sentence-feedback');
+
+      if (!input) {
+        fb.innerText = "Skriv en mening först i rutan ovanför!";
+        fb.className = "mb-6 p-4 rounded-2xl border border-amber-200 bg-amber-50 text-amber-800 text-sm font-sans block font-semibold";
+        return;
+      }
+
+      const containsWord = input.includes(targetWord);
+      const isLongEnough = input.split(' ').length >= 4;
+
+      if (containsWord && isLongEnough) {
+        fb.innerHTML = `
+          <div class="flex items-center gap-2 font-mono font-bold text-emerald-700 mb-1">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            FANTASTISKT! (+20 XP)
+          </div>
+          <p class="text-slate-700">Du använde ordet <strong>"${sentenceCurrentWord.en}"</strong> i en fin mening!</p>
+          <p class="text-xs text-slate-500 mt-2">Exempel från ordboken: <em>"${sentenceCurrentWord.example}"</em></p>
+        `;
+        fb.className = "mb-6 p-4 rounded-2xl border border-emerald-200 bg-emerald-50 text-sm font-sans block";
+        addXP(20);
+      } else if (!containsWord) {
+        fb.innerHTML = `
+          <div class="font-mono font-bold text-rose-700 mb-1">KOM IHÅG ATT ANVÄNDA ORDET!</div>
+          <p class="text-slate-700">Meningen måste innehålla ordet <strong>"${sentenceCurrentWord.en}"</strong>.</p>
+        `;
+        fb.className = "mb-6 p-4 rounded-2xl border border-rose-200 bg-rose-50 text-sm font-sans block";
+      } else {
+        fb.innerHTML = `
+          <div class="font-mono font-bold text-amber-700 mb-1">SKRIV EN LITE LÄNGRE MENING</div>
+          <p class="text-slate-700">Försök skriva minst 4 ord för att bygga en hel mening.</p>
+        `;
+        fb.className = "mb-6 p-4 rounded-2xl border border-amber-200 bg-amber-50 text-sm font-sans block";
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function nextSentenceQuestion() {
+      setupSentenceQuestion();
+    }
+
+    /* =================================================================
+       MODE 4: SPELLING LOGIC
+       ================================================================= */
+    function setupSpellingQuestion() {
+      if (filteredWords.length === 0) return;
+      const randomIndex = Math.floor(Math.random() * filteredWords.length);
+      spellingCurrentWord = filteredWords[randomIndex];
+
+      document.getElementById('spell-level-badge').innerText = spellingCurrentWord.level.toUpperCase();
+      document.getElementById('spell-definition-text').innerText = spellingCurrentWord.def;
+      document.getElementById('spell-hint-sv').innerText = spellingCurrentWord.sv;
+      document.getElementById('spell-length-hint').innerText = spellingCurrentWord.en.length;
+
+      const input = document.getElementById('spelling-input');
+      input.value = '';
+      input.focus();
+
+      const fb = document.getElementById('spelling-feedback');
+      fb.className = "hidden mb-6 p-4 rounded-2xl text-center font-mono text-sm font-bold";
+    }
+
+    function checkSpelling() {
+      const input = document.getElementById('spelling-input').value.trim().toLowerCase();
+      const correct = spellingCurrentWord.en.toLowerCase();
+      const fb = document.getElementById('spelling-feedback');
+
+      if (!input) return;
+
+      if (input === correct) {
+        fb.innerText = `UTMÄRKT! "${spellingCurrentWord.en}" ÄR RÄTT STAVAT! (+15 XP)`;
+        fb.className = "mb-6 p-4 rounded-2xl text-center font-mono text-sm font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 block";
+        addXP(15);
+        speakWord(spellingCurrentWord.en);
+      } else {
+        fb.innerText = `NÄSTAN! Rätt stavning är: "${spellingCurrentWord.en}"`;
+        fb.className = "mb-6 p-4 rounded-2xl text-center font-mono text-sm font-bold bg-rose-100 text-rose-800 border border-rose-200 block";
+      }
+    }
+
+    function nextSpellingQuestion() {
+      setupSpellingQuestion();
+    }
+  </script>
+
+</body>
+</html>
